@@ -1,67 +1,75 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const Role = require('../models/role');
+const { User } = require("../models/index");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const { authMiddleware } = require("../middleware/auth");
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
-router.post('/signup', async (req, res) => {
-  console.log('Signup route hit');
-  const { username, password } = req.body;
+router.post("/signup", authMiddleware, async (req, res) => {
+  const { username, password, role } = req.body;
 
-  // Log the raw request body and extracted values
-  console.log('Request body:', req.body);
-  console.log('Username:', username);
-  console.log('Password:', password);
-
-  // Validate request body
   if (!username || !password) {
-    console.log('Validation failed: username or password missing');
-    return res.status(400).json({ error: 'Username and password are required' });
+    return res
+      .status(400)
+      .json({ error: "Username and password are required" });
+  }
+
+  // Validate role if provided
+  const validRoles = ["super_admin", "admin", "user"];
+  const userRole = role || "user"; // Default to "user" if role is not provided
+  if (!validRoles.includes(userRole)) {
+    return res.status(400).json({ error: "Invalid role" });
+  }
+
+  // Only super_admin can create admin or super_admin
+  const currentUser = req.user; // From authMiddleware
+  if (
+    (userRole === "admin" || userRole === "super_admin") &&
+    (!currentUser || currentUser.role !== "super_admin")
+  ) {
+    return res.status(403).json({
+      error: "Only super_admin can create admin or super_admin users",
+    });
   }
 
   try {
-    console.log('Hashing password...');
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log('Hashed password:', hashedPassword);
-
-    console.log('Creating user...');
+    const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds for bcrypt
     const user = await User.create({
       username,
       password: hashedPassword,
-      role_id: 3,
+      role: userRole, // Set the role for the new user
     });
-    console.log('User created:', user.id);
-    res.status(201).json({ message: 'User created', userId: user.id });
+    res.status(201).json({ message: "User created", userId: user.id });
   } catch (error) {
-    console.error('Signup error:', error);
-    if (error.name === 'SequelizeUniqueConstraintError') {
-      res.status(400).json({ error: 'Username already taken' });
+    if (error.name === "SequelizeUniqueConstraintError") {
+      res.status(400).json({ error: "Username already taken" });
     } else {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: "Server error" });
     }
   }
 });
 
-router.post('/login', async (req, res) => {
-  console.log('Login route hit');
+router.post("/login", async (req, res) => {
   const { username, password } = req.body;
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ error: "Username and password are required" });
+  }
   try {
-    const user = await User.findOne({ where: { username }, include: Role });
+    const user = await User.findOne({ where: { username } });
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ error: "Invalid credentials" });
     }
-    const token = jwt.sign(
-      { id: user.id, username: user.username, role: user.Role.role_name },
-      JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-    res.json({ token });
+    const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.json({ token, userId: user.id });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
