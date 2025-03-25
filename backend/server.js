@@ -4,7 +4,7 @@ const sequelize = require("./config/database");
 const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
-const guideRoute = require("./routes/guides");
+const guideRoutes = require("./routes/guides");
 require("dotenv").config();
 
 const PORT = process.env.PORT;
@@ -14,7 +14,7 @@ app.use(cors());
 
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
-app.use("/guides", guideRoute);
+app.use("/guides", guideRoutes);
 
 (async () => {
   try {

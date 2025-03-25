@@ -2,7 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import Signup from "../pages/Signup";
 import Login from "../pages/Login";
-// import Posts from "../pages/Posts";
+import Post from "../pages/Post";
+import Guide from "../pages/Guide";
+import GuideDetail from "../pages/GuideDetail";
+import CreatePost from "../pages/CreatePost";
 import NotFound from "../pages/NotFound";
 
 const AppRoutes: React.FC = () => (
@@ -11,7 +14,10 @@ const AppRoutes: React.FC = () => (
       <Route path="/" element={<Home />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
-      {/* <Route path="/posts" element={<Posts />} /> */}
+      <Route path="/post" element={<Post />} />
+      <Route path="/post/createpost" element={<CreatePost />} />
+      <Route path="/guide" element={<Guide />} />
+      <Route path="/guide/:id" element={<GuideDetail />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </Router>
