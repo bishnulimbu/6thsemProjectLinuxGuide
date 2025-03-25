@@ -5,6 +5,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
 const guideRoutes = require("./routes/guides");
+const commentRoutes = require("./routes/comments");
 require("dotenv").config();
 
 const PORT = process.env.PORT;
@@ -15,6 +16,7 @@ app.use(cors());
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
 app.use("/guides", guideRoutes);
+app.use("/comments", commentRoutes);
 
 (async () => {
   try {

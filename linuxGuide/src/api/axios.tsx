@@ -24,6 +24,7 @@ export const getGuides = async () => {
 
 export const getGuideById = async (id: number) => {
   const response = await api.get(`/guides/${id}`);
+  return response.data;
 };
 
 export const getPosts = async () => {
@@ -41,4 +42,30 @@ export const createPost = async (post: {
   return response.data;
 };
 
-export const getComments = async (GuideId: number) => {};
+export const getCommentsForGuide = async (guideId: number) => {
+  const response = await api.get(`/comments/guide/${guideId}`);
+  return response.data;
+};
+
+export const getCommentsForPost = async (postId: number) => {
+  const response = await api.get(`/comments/post/${postId}`);
+  return response.data;
+};
+
+export const createCommentForGuide = async (
+  guideId: number,
+  content: string,
+) => {
+  const response = await api.post(`/comments/guide/${guideId}`, { content });
+  return response.data;
+};
+
+export const createCommentForPost = async (postId: number, content: string) => {
+  const response = await api.post(`/comments/post/${postId}`, { content });
+  return response.data;
+};
+
+export const deleteComment = async (id: number) => {
+  const response = await api.delete(`/comments/${id}`);
+  return response.data;
+};

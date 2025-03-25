@@ -1,13 +1,18 @@
 import api from "./axios";
-import { SignupResponse, SingupRequest } from "./types";
 
-const signup = async (data: SingupRequest): Promise<SingupResponse> => {
-  const response = await api.post<SignupResponse>("/auth/singup", data);
+const signup = async (username: string, password: string) => {
+  const response = await api.post("/auth/singup", {
+    username,
+    password,
+  });
   return response.data;
 };
 
-const login = async (data: SingupRequest): Promise<SingupResponse> => {
-  const response = await api.post<SignupResponse>("/auth/login", data);
+const login = async (username: string, password: string) => {
+  const response = await api.post("/auth/login", {
+    username,
+    password,
+  });
   return response.data;
 };
 
