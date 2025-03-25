@@ -10,28 +10,37 @@ const Comment = sequelize.define(
       primaryKey: true,
     },
     content: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "User",
+        model: "users",
         key: "id",
       },
     },
-    guideId: {
+    postId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
-        model: "Guide",
-        key: "id",
+        model: "posts",
+        id: "id",
+      },
+      guideId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: "guides",
+          key: "id",
+        },
       },
     },
   },
   {
     tableName: "comments",
+    timestamps: true,
     validate: {
       exactlyOneOfGuideIdOrPostId() {
         if (
@@ -47,4 +56,4 @@ const Comment = sequelize.define(
   },
 );
 
-model.exports = Comment;
+module.exports = Comment;
