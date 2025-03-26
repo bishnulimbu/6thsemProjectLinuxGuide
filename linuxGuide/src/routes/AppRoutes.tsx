@@ -10,16 +10,18 @@ import NotFound from "../pages/NotFound";
 
 const AppRoutes: React.FC = () => (
   <Router>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/post" element={<Post />} />
-      <Route path="/post/createpost" element={<CreatePost />} />
-      <Route path="/guide" element={<Guide />} />
-      <Route path="/guide/:id" element={<GuideDetail />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <main>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/post" element={<Post />} />
+        <Route path="/guide" element={<Guide />} />
+        <Route path="/guide/:id" element={<GuideDetail />} />
+        <Route path="/create-post" element={<CreatePost />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </main>
   </Router>
 );
 
