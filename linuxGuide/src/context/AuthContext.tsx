@@ -1,11 +1,11 @@
-import React, {
+import {
   useState,
   useContext,
   createContext,
   useEffect,
   ReactNode,
 } from "react";
-import { login } from "../api/auth";
+import { login } from "../services/api";
 import { toast } from "react-toastify";
 
 interface AuthContextType {
@@ -48,11 +48,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("token", data.token);
       const payload = JSON.parse(atob(data.token.split(".")[1]));
       setToken(data.token);
+
       setUserId(data.usedId);
       setRole(payload.role);
       toast.success("Login Successful");
     } catch (err: any) {
-      toast.error(err.response?.data?.error || "Login failed");
+      toast.error(err.message || "Login failed");
       throw err;
     }
   };
