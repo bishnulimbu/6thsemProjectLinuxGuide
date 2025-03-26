@@ -1,4 +1,4 @@
-import { FeatureCardProps } from "../../types";
+import { FeatureCardProps } from "../../types/FeatureCard";
 import "./FeatureCard.css";
 
 // Define the FeatureCard component
