@@ -1,5 +1,4 @@
 const express = require("express");
-const app = express();
 const sequelize = require("./config/database");
 const cors = require("cors");
 const authRoutes = require("./routes/auth");
@@ -7,6 +6,8 @@ const postRoutes = require("./routes/posts");
 const guideRoutes = require("./routes/guides");
 const commentRoutes = require("./routes/comments");
 require("dotenv").config();
+
+const app = express();
 
 const PORT = process.env.PORT;
 
