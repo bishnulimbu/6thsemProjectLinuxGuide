@@ -1,5 +1,3 @@
-import Navbar from "../components/layout/Navbar";
-// import Footer from "../components/layout/Footer";
 import FeatureCard from "../components/ui/FeatureCard";
 import "./Home.css";
 
@@ -27,7 +25,6 @@ const Home: React.FC = () => {
 
   return (
     <div className="Home">
-      <Navbar />
       <section id="home" className="hero">
         <h1>Welcome to DemoApp</h1>
         <p>Build amazing things with React and TypeScript</p>
