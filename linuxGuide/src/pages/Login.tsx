@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import "./Login.css";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
