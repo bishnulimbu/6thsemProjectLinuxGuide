@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Guide, User } = require("../models");
-const { authMiddleware, requireRole } = require("../middleware/auth");
+const { authMiddleware, requiredRole } = require("../middleware/auth");
 
 // Get all guides (only published guides for non-admins)
 router.get("/", async (req, res) => {
@@ -49,7 +49,7 @@ router.get("/:id", async (req, res) => {
 router.post(
   "/",
   authMiddleware,
-  requireRole(["admin", "super_admin"]),
+  requiredRole(["admin", "super_admin"]),
   async (req, res) => {
     const { title, description, status } = req.body;
     if (!title || !description) {
@@ -76,7 +76,7 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
-  requireRole(["admin", "super_admin"]),
+  requiredRole(["admin", "super_admin"]),
   async (req, res) => {
     const { title, description, status } = req.body;
     try {
@@ -103,7 +103,7 @@ router.put(
 router.delete(
   "/:id",
   authMiddleware,
-  requireRole(["super_admin"]),
+  requiredRole(["super_admin"]),
   async (req, res) => {
     try {
       const guide = await Guide.findByPk(req.params.id);
