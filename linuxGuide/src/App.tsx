@@ -11,7 +11,7 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <div className="app">
+        <div className="max-w-6xl mx-auto p-5 min-h-screen flex flex-col">
           <Navbar />
           <AppRoutes />
           <Footer />
