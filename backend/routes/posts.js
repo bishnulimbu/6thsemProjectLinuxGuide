@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Post, User } = require("../models");
-const { authMiddleware, requireRole } = require("../middleware/auth");
+const { authMiddleware, requiredRole } = require("../middleware/auth");
 
 // Get all posts (only published posts for non-admins)
 router.get("/", async (req, res) => {
@@ -98,7 +98,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 router.delete(
   "/:id",
   authMiddleware,
-  requireRole(["super_admin"]),
+  requiredRole(["super_admin"]),
   async (req, res) => {
     try {
       const post = await Post.findByPk(req.params.id);
