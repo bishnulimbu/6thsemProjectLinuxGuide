@@ -1,98 +1,168 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { FaLinux, FaBars, FaTimes } from "react-icons/fa";
 
-const Navbar: React.FC = (): React.ReactElement => {
-  const [isNavOpen, setIsNavOpen] = useState<boolean>(false);
-  const { token, logout, role } = useAuth();
+const Navbar: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { token, role, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const toggleNav = (): void => {
-    setIsNavOpen(!isNavOpen);
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
   };
 
   return (
-    <nav className="flex justify-between items-center py-2">
-      <div className="logo">
-        <h1 className="text-xl font-bold">Demo App</h1>
-      </div>
-      <button
-        className="md:hidden text-2xl bg-transparent border-none cursor-pointer"
-        onClick={toggleNav}
-        aria-expanded={isNavOpen ? "true" : "false"}
-      >
-        {isNavOpen ? "✕" : "≡"}
-      </button>
-      <ul
-        className={`flex gap-5 list-none p-0 m-0 md:flex-row md:static md:bg-transparent md:shadow-none md:p-0 ${
-          isNavOpen
-            ? "flex flex-col absolute top-14 left-0 right-0 bg-white shadow-md p-2"
-            : "hidden md:flex"
-        }`}
-      >
-        <li>
-          <Link to="/" className="no-underline text-blue-500 hover:underline">
+    <nav className="bg-white shadow-md p-4">
+      <div className="flex justify-between items-center max-w-6xl mx-auto">
+        {/* Title/Logo Section */}
+        <Link to="/" className="flex items-center space-x-2 group">
+          <FaLinux className="text-3xl text-blue-600 group-hover:text-blue-800 transition" />
+          <h1 className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent group-hover:from-blue-700 group-hover:to-blue-900 transition">
+            Linux Guide
+          </h1>
+        </Link>
+
+        {/* Hamburger Menu for Mobile */}
+        <div className="md:hidden">
+          <button
+            onClick={toggleMenu}
+            className="text-gray-600 focus:outline-none"
+          >
+            {isOpen ? (
+              <FaTimes className="text-2xl" />
+            ) : (
+              <FaBars className="text-2xl" />
+            )}
+          </button>
+        </div>
+
+        {/* Navigation Links - Desktop */}
+        <div className="hidden md:flex space-x-4">
+          <Link
+            to="/"
+            className="text-gray-600 hover:text-blue-600 transition font-medium"
+          >
             Home
           </Link>
-        </li>
-        <li>
           <Link
-            to="/guide"
-            className="no-underline text-blue-500 hover:underline"
+            to="/guides"
+            className="text-gray-600 hover:text-blue-600 transition font-medium"
           >
             Guides
           </Link>
-        </li>
-        <li>
           <Link
-            to="/post"
-            className="no-underline text-blue-500 hover:underline"
+            to="/posts"
+            className="text-gray-600 hover:text-blue-600 transition font-medium"
           >
             Posts
           </Link>
-        </li>
-        {token ? (
-          <>
-            <li>
-              <Link
-                to="/create-post"
-                className="no-underline text-blue-500 hover:underline"
-              >
-                Create Post
-              </Link>
-            </li>
-            <li>
-              <span>Logged in as {role}</span>
-            </li>
-            <li>
+          {token ? (
+            <>
+              {role === "super_admin" && (
+                <Link
+                  to="/admin"
+                  className="text-gray-600 hover:text-blue-600 transition font-medium"
+                >
+                  Admin
+                </Link>
+              )}
               <button
-                onClick={logout}
-                className="no-underline text-blue-500 hover:underline bg-transparent border-none cursor-pointer"
+                onClick={handleLogout}
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
               >
                 Logout
               </button>
-            </li>
-          </>
-        ) : (
-          <>
-            <li>
+            </>
+          ) : (
+            <>
               <Link
                 to="/signup"
-                className="no-underline text-blue-500 hover:underline"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
               >
                 Signup
               </Link>
-            </li>
-            <li>
               <Link
                 to="/login"
-                className="no-underline text-blue-500 hover:underline"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
               >
                 Login
               </Link>
-            </li>
-          </>
-        )}
-      </ul>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Navigation Links - Mobile (Dropdown) */}
+      {isOpen && (
+        <div className="md:hidden mt-4 flex flex-col space-y-2">
+          <Link
+            to="/"
+            className="text-gray-600 hover:text-blue-600 transition font-medium"
+            onClick={toggleMenu}
+          >
+            Home
+          </Link>
+          <Link
+            to="/guides"
+            className="text-gray-600 hover:text-blue-600 transition font-medium"
+            onClick={toggleMenu}
+          >
+            Guides
+          </Link>
+          <Link
+            to="/posts"
+            className="text-gray-600 hover:text-blue-600 transition font-medium"
+            onClick={toggleMenu}
+          >
+            Posts
+          </Link>
+          {token ? (
+            <>
+              {role === "super_admin" && (
+                <Link
+                  to="/admin"
+                  className="text-gray-600 hover:text-blue-600 transition font-medium"
+                  onClick={toggleMenu}
+                >
+                  Admin
+                </Link>
+              )}
+              <button
+                onClick={() => {
+                  handleLogout();
+                  toggleMenu();
+                }}
+                className="text-gray-600 hover:text-blue-600 transition font-medium text-left"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/signup"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+                onClick={toggleMenu}
+              >
+                Signup
+              </Link>
+              <Link
+                to="/login"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+                onClick={toggleMenu}
+              >
+                Login
+              </Link>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 };
