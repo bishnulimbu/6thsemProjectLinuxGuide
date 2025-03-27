@@ -1,11 +1,12 @@
-import { AuthProvider } from "./context/AuthContext";
 import Footer from "./components/layout/Footer";
 import Navbar from "./components/layout/Navbar";
+import React from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import AppRoutes from "./routes/AppRoutes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/tailwind.css";
-import { BrowserRouter as Router } from "react-router-dom";
 
 const App = () => {
   return (
@@ -15,7 +16,10 @@ const App = () => {
           <Navbar />
           <AppRoutes />
           <Footer />
-          <ToastContainer />
+          <ToastContainer
+            toastClassName="rounded-md shadow-md p-4 bg-white text-gray-800"
+            progressClassName="bg-blue-500"
+          />
         </div>
       </Router>
     </AuthProvider>
