@@ -8,7 +8,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  min-height: 100vh; /* Ensure the app takes up the full viewport height */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -18,7 +18,7 @@ body {
 }
 
 .app > main {
-  flex: 1 0 auto; /* Ensure the main content grows to fill available space */
+  flex: 1 0 auto;
 }
 
 .navbar {
@@ -99,11 +99,13 @@ body {
   margin-bottom: 10px;
 }
 
-.guide-detail {
+.guide-detail,
+.post-detail {
   margin-top: 20px;
 }
 
-.guide-content {
+.guide-content,
+.post-content {
   border: 1px solid #ddd;
   padding: 20px;
   border-radius: 5px;
@@ -111,14 +113,17 @@ body {
 
 .login,
 .signup,
-.create-post {
+.create-post,
+.about,
+.contact {
   max-width: 400px;
   margin: 0 auto;
 }
 
 .login form,
 .signup form,
-.create-post form {
+.create-post form,
+.contact form {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -129,19 +134,23 @@ body {
 .signup select,
 .create-post input,
 .create-post textarea,
-.create-post select {
+.create-post select,
+.contact input,
+.contact textarea {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.create-post textarea {
+.create-post textarea,
+.contact textarea {
   min-height: 150px;
 }
 
 .login button,
 .signup button,
-.create-post button {
+.create-post button,
+.contact button {
   padding: 10px;
   background-color: #007bff;
   color: white;
@@ -152,7 +161,8 @@ body {
 
 .login button:hover,
 .signup button:hover,
-.create-post button:hover {
+.create-post button:hover,
+.contact button:hover {
   background-color: #0056b3;
 }
 
@@ -224,7 +234,7 @@ body {
   padding: 20px 0;
   border-top: 1px solid #ddd;
   text-align: center;
-  flex-shrink: 0; /* Prevent the footer from shrinking */
+  flex-shrink: 0;
 }
 
 .footer-content {
