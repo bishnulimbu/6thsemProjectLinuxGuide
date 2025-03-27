@@ -20,7 +20,7 @@ const authMiddleware = (req, res, next) => {
 };
 
 // Middleware to restrict access based on roles
-const requireRole = (roles) => (req, res, next) => {
+const requiredRole = (roles) => (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({ error: "Authentication required" });
   }
@@ -32,4 +32,4 @@ const requireRole = (roles) => (req, res, next) => {
   next();
 };
 
-module.exports = { authMiddleware, requireRole };
+module.exports = { authMiddleware, requiredRole };
