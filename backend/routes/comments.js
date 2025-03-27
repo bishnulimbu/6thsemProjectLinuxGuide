@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Comment, User } = require("../models");
-const { authMiddleware, requireRole } = require("../middleware/auth");
+const { authMiddleware, requiredRole } = require("../middleware/auth");
 
 //get all comments for a guide
 router.get("/guide/:guideId", async (req, res) => {
