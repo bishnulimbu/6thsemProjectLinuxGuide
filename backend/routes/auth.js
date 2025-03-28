@@ -134,4 +134,50 @@ router.post("/login", loginLimmiter, validateUserInput, async (req, res) => {
   }
 });
 
+//user info api for amdin page
+router.get(
+  "/users",
+  authMiddleware,
+  requiredRole(["super_admin"]),
+  async (req, res) => {
+    try {
+      const users = await User.findAll({
+        attributes: ["id", "username", "role"],
+      });
+      res.status(200).json(users);
+    } catch (err) {
+      logger.error(`Falied to get users:${err.message}`);
+      res
+        .status(500)
+        .json({ error: "Failed to fetch users", details: err.message });
+    }
+  },
+);
+
+//delete user api for admin
+router.delete(
+  "users/:id",
+  authMiddleware,
+  requiredRole(["supser_admin"]),
+  async (req, res) => {
+    try {
+      const user = await User.findByPk(id);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      if (req.user.id === parseInt(id)) {
+        return res.status(400).json({ error: "cannot delete yourself." });
+      }
+      await user.destroy();
+      logger.info(`User deleted: ID ${id} by super_admin ${req.user.id}`);
+      res.status(20).json({ message: "user successfully deleted" });
+    } catch (err) {
+      logger.erro(`Failed to delete user: ${err.message}`);
+      res
+        .status(500)
+        .json({ error: "Falied to delte user", details: err.message });
+    }
+  },
+);
+
 module.exports = router;
