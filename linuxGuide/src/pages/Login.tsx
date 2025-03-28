@@ -23,9 +23,11 @@ const Login: React.FC = () => {
         draggable: true,
         theme: "light",
       });
-      navigate("/guides");
+      navigate("/guide");
     } catch (err: any) {
-      toast.error(err.message || "Login failed", {
+      const errorMessage =
+        err.status == 400 ? err.message : "Invalid username or password.";
+      toast.error(errorMessage, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -43,7 +45,7 @@ const Login: React.FC = () => {
         <div className="bg-white p-8 rounded-lg shadow-md text-center">
           <p className="text-gray-600 text-lg">You are already logged in.</p>
           <button
-            onClick={() => navigate("/guides")}
+            onClick={() => navigate("/guide")}
             className="mt-4 px-6 py-3 bg-blue-800 text-white rounded-full hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
           >
             Go to Guides

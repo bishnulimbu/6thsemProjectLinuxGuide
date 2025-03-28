@@ -30,7 +30,9 @@ const Signup: React.FC = () => {
       });
       navigate("/login");
     } catch (err: any) {
-      toast.error(err.message || "Signup failed", {
+      const errorMessage =
+        err.status == 400 ? err.message : "Signup falied. Please try again.";
+      toast.error(errorMessage, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -59,7 +61,11 @@ const Signup: React.FC = () => {
       setAdminPassword("");
       setAdminRole("user");
     } catch (err: any) {
-      toast.error(err.message || "Signup failed", {
+      const errorMessage =
+        err.status == 400
+          ? err.message
+          : "Admin Signup falied. Please try again.";
+      toast.error(errorMessage, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
