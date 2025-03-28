@@ -9,6 +9,7 @@ import CreatePost from "../pages/CreatePost";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
+// import Admin from '../pages/ad' will need a admin page.
 
 const AppRoutes: React.FC = () => (
   <main>
