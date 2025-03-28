@@ -13,6 +13,11 @@ interface AuthResponse {
   role: string;
   content: string;
 }
+interface User {
+  id: number;
+  username: string;
+  role: string;
+}
 
 interface Guide {
   id: number;
@@ -41,14 +46,6 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
   timeout: 10000,
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer${token}`;
-  }
-  return config;
 });
 
 api.interceptors.response.use(
@@ -110,18 +107,34 @@ export const adminSignup = async (
 
 //Guide api calls
 export const getGuides = async (): Promise<Guide[]> => {
-  const response = await api.get("/guides");
-  return response.data;
+  try {
+    const response = await api.get("/guides");
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(err.messagee || "Falled to fetch guides.", err.status);
+  }
 };
 
-export const getGuideById = async (id: number) => {
-  const response = await api.get(`/guides/${id}`);
-  return response.data;
+export const getGuideById = async (id: number): Promise<Guide> => {
+  try {
+    const response = await api.get(`/guides/${id}`);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.messagee || "Falled to fetch this guide.",
+      err.status,
+    );
+  }
 };
 
-export const getPosts = async () => {
-  const response = await api.get("/posts");
-  return response.data;
+//post api calls
+export const getPosts = async (): Promise<Post> => {
+  try {
+    const response = await api.get("/posts");
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(err.messsage || "failed to fetch posts", err.status);
+  }
 };
 
 export const createPost = async (post: {
@@ -129,37 +142,118 @@ export const createPost = async (post: {
   content: string;
   tags: string;
   status: "draft" | "published" | "archived";
-}) => {
-  const response = await api.post("/posts", post);
-  return response.data;
+}): Promise<Post> => {
+  try {
+    const response = await api.post("/posts", post);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(err.message || "Falied to create new post.", err.status);
+  }
 };
 
-export const getCommentsForGuide = async (guideId: number) => {
-  const response = await api.get(`/comments/guide/${guideId}`);
-  return response.data;
+export const getCommentsForGuide = async (
+  guideId: number,
+): Promise<Comment[]> => {
+  try {
+    const response = await api.get(`/comments/guide/${guideId}`);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || "Failed to fetch comments for guide ${guideId}",
+      err.status,
+    );
+  }
 };
 
-export const getCommentsForPost = async (postId: number) => {
-  const response = await api.get(`/comments/post/${postId}`);
-  return response.data;
+export const getCommentsForPost = async (
+  postId: number,
+): Promise<Comment[]> => {
+  try {
+    const response = await api.get(`/comments/post/${postId}`);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || "Failed to fetch comments for post ${postId}",
+      err.status,
+    );
+  }
 };
 
 export const createCommentForGuide = async (
   guideId: number,
   content: string,
-) => {
-  const response = await api.post(`/comments/guide/${guideId}`, { content });
-  return response.data;
+): Promise<Comment> => {
+  try {
+    const response = await api.post(`/comments/guide/${guideId}`, { content });
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || "Failed to create comment for guide ${guideId}",
+      err.status,
+    );
+  }
 };
 
-export const createCommentForPost = async (postId: number, content: string) => {
-  const response = await api.post(`/comments/post/${postId}`, { content });
-  return response.data;
+export const createCommentForPost = async (
+  postId: number,
+  content: string,
+): Promise<Comment> => {
+  try {
+    const response = await api.post(`/comments/post/${postId}`, { content });
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || "Failed to create comment for post ${postId}",
+      err.status,
+    );
+  }
 };
 
-export const deleteComment = async (id: number) => {
-  const response = await api.delete(`/comments/${id}`);
-  return response.data;
+export const deleteComment = async (
+  id: number,
+): Promise<{ message: string }> => {
+  try {
+    const response = await api.delete(`/comments/${id}`);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || "Failed to delete comment ${id}",
+      err.status,
+    );
+  }
+};
+
+//api calls for admin
+export const getUsers = async (): Promise<User[]> => {
+  try {
+    const response = await api.get("/auth/users");
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(err.message || "Failed to fetch users.", err.status);
+  }
+};
+export const deleteUser = async (id: number): Promise<{ message: string }> => {
+  try {
+    const response = await api.delete(`/auth/users/${id}`);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || `Failed to delete user with id ${id}`,
+      err.status,
+    );
+  }
+};
+
+export const deleteGuide = async (id: number): Promise<{ message: string }> => {
+  try {
+    const response = await api.delete(`/guides/${id}`);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || `Failed to delete guide with id ${id}`,
+      err.status,
+    );
+  }
 };
 
 export default api;
