@@ -51,13 +51,13 @@ const Navbar: React.FC = () => {
             Home
           </Link>
           <Link
-            to="/guides"
+            to="/guide"
             className="text-gray-600 hover:text-blue-600 transition font-medium"
           >
             Guides
           </Link>
           <Link
-            to="/posts"
+            to="/post"
             className="text-gray-600 hover:text-blue-600 transition font-medium"
           >
             Posts
