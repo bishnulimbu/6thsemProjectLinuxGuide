@@ -5,77 +5,108 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { login } from "../services/api";
-import { toast } from "react-toastify";
+import { login, signup, adminSignup } from "../services/api";
 
 interface AuthContextType {
-  userId: number | null;
   token: string | null;
   role: string | null;
+  isAuthenticated: boolean;
+  isSuperAdmin: boolean;
+  isAdmin: boolean;
   loginUser: (username: string, password: string) => Promise<void>;
+  signupUser: (username: string, password: string) => Promise<void>;
+  adminSignupUser: (
+    username: string,
+    password: string,
+    role: string,
+  ) => Promise<void>;
   logout: () => void;
 }
 
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+//authcontext with a default value undefined.
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token"),
-  );
-  const [userId, setUserId] = useState<number | null>(null);
+
+//custom hook to use the authcontext
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider.");
+  }
+  return context;
+};
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [token, setToken] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      try {
-        const payload = JSON.parse(storedToken.split(".")[1]);
-        setToken(storedToken);
-        setUserId(payload.id);
-        setRole(payload.role);
-      } catch (err) {
-        console.error("Invalid token", err);
-        localStorage.removeItem("token");
-        setToken(null);
-        setUserId(null);
-        setRole(null);
-      }
+    const storedRole = localStorage.getIten("role");
+    if (storedToken && storedRole) {
+      setToken(storedToken);
+      setRole(storedRole);
     }
   }, []);
 
   const loginUser = async (username: string, password: string) => {
     try {
-      const data = await login(username, password);
-      localStorage.setItem("token", data.token);
-      const payload = JSON.parse(atob(data.token.split(".")[1]));
-      setToken(data.token);
-
-      setUserId(data.usedId);
-      setRole(payload.role);
-      toast.success("Login Successful");
+      const { token, role } = await login(username, password);
+      setToken(token);
+      setRole(role);
+      localStorage.setITem("token", token);
+      localStorage.setITem("role", role);
     } catch (err: any) {
-      toast.error(err.message || "Login failed");
+      throw err;
+    }
+  };
+
+  const signupUser = async (username: string, password: string) => {
+    try {
+      await signup(username, password);
+      await loginUser(username, password);
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  const adminSignupUser = async (
+    username: string,
+    password: string,
+    role: string,
+  ) => {
+    try {
+      await adminSignup(username, password, role);
+    } catch (err: any) {
       throw err;
     }
   };
 
   const logout = () => {
-    localStorage.remove("token");
     setToken(null);
-    setUserId(null);
     setRole(null);
-    toast.info("Logged out successfully.");
+    localStorage.remove("token");
+    localStorage.remove("role");
   };
 
-  return (
-    <AuthContext.Provider value={{ token, userId, role, loginUser, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+  const isAuthenticated = !!token;
+  const isSuperAdmin = role === "super_admin";
+  const isAdmin = role === "admin" || role === "super_admin";
+
+  const value: AuthContextType = {
+    token,
+    role,
+    isAuthenticated,
+    isSuperAdmin,
+    isAdmin,
+    loginUser,
+    signupUser,
+    adminSignupUser,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
