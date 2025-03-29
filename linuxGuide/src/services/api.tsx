@@ -1,4 +1,11 @@
 import axios, { AxiosError } from "axios";
+import {
+  AuthResponse,
+  User,
+  Guide,
+  Post,
+  Comment,
+} from "../interfaces/interface";
 
 class ApiError extends Error {
   status?: number;
@@ -7,37 +14,6 @@ class ApiError extends Error {
     this.name = "ApiError";
     this.status = status;
   }
-}
-interface AuthResponse {
-  token: string;
-  role: string;
-  content: string;
-}
-interface User {
-  id: number;
-  username: string;
-  role: string;
-}
-
-interface Guide {
-  id: number;
-  title: string;
-  content: string;
-}
-
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  tags: string;
-  status: "draft" | "published" | "archived";
-}
-
-interface Comment {
-  id: number;
-  content: string;
-  guideId?: number;
-  postId?: number;
 }
 
 const api = axios.create({
@@ -128,7 +104,7 @@ export const getGuideById = async (id: number): Promise<Guide> => {
 };
 
 //post api calls
-export const getPosts = async (): Promise<Post> => {
+export const getPosts = async (): Promise<Post[]> => {
   try {
     const response = await api.get("/posts");
     return response.data;
