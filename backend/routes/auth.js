@@ -38,11 +38,11 @@ const validateUserInput = [
 router.post("/signup", validateUserInput, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.statis(500).json({ errors: errors.array() });
+    return res.status(400).json({ errors: errors.array() });
   }
   const { username, password } = req.body;
 
-  // Validate role if for normla user.
+  // Validate role if for normal user.
   try {
     const existingUser = await User.findOne({ where: { username } });
     if (existingUser) {
@@ -55,15 +55,15 @@ router.post("/signup", validateUserInput, async (req, res) => {
       password: hashedPassword,
       role: "user", // Set the role for the new user
     });
-    logger.info(`User created successfully: ${username} (ID: ${user.id}`);
+    logger.info(`User created successfully: ${username} (ID: ${user.id})`);
     res
       .status(201)
-      .json({ message: "User created", userId: user.id, role: role.id });
+      .json({ message: "User created", userId: user.id, role: user.id });
   } catch (err) {
     logger.error(`Failed to create user: ${err.message}`);
     res
       .status(500)
-      .json({ error: "Falied to create User.", details: err.message });
+      .json({ error: "Failed to create User.", details: err.message });
   }
 });
 
