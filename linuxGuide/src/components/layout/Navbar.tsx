@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { FaLinux, FaBars, FaTimes } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,7 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     logout();
+    toast.success("Logged out successfully.");
     navigate("/login");
   };
 
