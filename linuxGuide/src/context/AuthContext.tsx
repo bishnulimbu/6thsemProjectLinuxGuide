@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    const storedRole = localStorage.getIten("role");
+    const storedRole = localStorage.getItem("role");
     if (storedToken && storedRole) {
       setToken(storedToken);
       setRole(storedRole);
@@ -57,8 +57,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const { token, role } = await login(username, password);
       setToken(token);
       setRole(role);
-      localStorage.setITem("token", token);
-      localStorage.setITem("role", role);
+      localStorage.setItem("role", role);
+      localStorage.setItem("role", role);
     } catch (err: any) {
       throw err;
     }
@@ -88,8 +88,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     setToken(null);
     setRole(null);
-    localStorage.remove("token");
-    localStorage.remove("role");
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
   };
 
   const isAuthenticated = !!token;
