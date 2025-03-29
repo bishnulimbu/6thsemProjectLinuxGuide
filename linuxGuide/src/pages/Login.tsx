@@ -26,7 +26,11 @@ const Login: React.FC = () => {
       navigate("/guide");
     } catch (err: any) {
       const errorMessage =
-        err.status == 400 ? err.message : "Invalid username or password.";
+        err.status === 401
+          ? "Invalid username or password."
+          : err.status === 400
+            ? "Username and password are required."
+            : err.message || "Login failed. Please try again.";
       toast.error(errorMessage, {
         position: "top-right",
         autoClose: 3000,
