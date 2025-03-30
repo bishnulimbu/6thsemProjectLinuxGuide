@@ -9,6 +9,7 @@ import {
   getGuides,
   deleteGuide,
   getPosts,
+  deletePost,
   deleteComment,
   getCommentsForGuide,
   getCommentsForPost,
@@ -133,13 +134,74 @@ const Admin: React.FC = () => {
       });
     }
   };
-  // const handleDeletePost = async (id: number) => {
-  //   if (!window.confirm("Are you sure you want to delete this guide?")) return;
-  //   try {
-  //     await api.delete(`posts/${id}`);
-  //     setPosts(posts.filter((post) => post.id !== id));
-  //   } catch (err: any) {}
-  // };
+  const handleDeletePost = async (id: number) => {
+    if (!window.confirm("Are you sure you want to delete this guide?")) return;
+    try {
+      await deletePost(id);
+      setPosts(posts.filter((post) => post.id !== id));
+      toast.success("Post deleted successfully", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete post", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    }
+  };
+  const handleDeleteComment = async (id: number) => {
+    if (!window.confirm("Are you sure you want to delete this comment?"))
+      return;
+    try {
+      await deleteComment(id);
+      setComments(comments.filter((comment) => comment.id !== id));
+      toast.success("Comment deleted successfully", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete comment", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    }
+  };
+  if(!isSuperAdmin){return null};
 
-  return <h1>hello</h1>;
+  return(
+  {/* <div className="max-w-6xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md"> */}
+  {/*     <h2 className="text-3xl font-bold mb-5 text-center text-gray-800">Admin Dashboard</h2> */}
+  {/*     {Loading ?( */}
+  {/*     <p className="text-center text-gray-600">Loading...</p> */}
+  {/*     ):( */}
+  {/*     <div className="space-y-8"> */}
+  {/*           <button>create guide button</button> */}
+  {/*         <div className="flex justify-end"> */}
+  {/*             <button onClick={()=>navigate("/create=guide") className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"}>bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition" */}
+  {/*           >Create New Guide</button> */}
+  {/*         </div> */}
+  {/*         </div> */}
+  {/*     )} */}
+  {/*   </div> */}
+  {/* ) */}
+<h1>hello</h1>
 };
