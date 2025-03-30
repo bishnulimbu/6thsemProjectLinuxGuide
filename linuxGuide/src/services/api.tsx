@@ -231,5 +231,16 @@ export const deleteGuide = async (id: number): Promise<{ message: string }> => {
     );
   }
 };
+export const deletePost = async (id: number): Promise<{ message: string }> => {
+  try {
+    const response = await api.delete(`/posts/${id}`);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || `Failed to delete post with id ${id}`,
+      err.status,
+    );
+  }
+};
 
 export default api;
