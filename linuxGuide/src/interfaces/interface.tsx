@@ -13,7 +13,12 @@ export interface User {
 export interface Guide {
   id: number;
   title: string;
-  content: string;
+  status: "draft" | "published";
+  description: string;
+  userId: number;
+  createdAt: string;
+  updatedAt: string;
+  User: { username: string };
 }
 
 export interface Post {
@@ -22,6 +27,10 @@ export interface Post {
   content: string;
   tags: string;
   status: "draft" | "published" | "archived";
+  userId: number;
+  User: { username: string };
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Comment {
