@@ -2,27 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import FeatureCard from "../components/ui/FeatureCard";
 import { getPosts, getGuides } from "../services/api";
-
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  tags: string;
-  status: "draft" | "published" | "archived";
-  userId: number;
-  createdAt: string;
-  updatedAt: string;
-  User: { username: string };
-}
-interface Guide {
-  id: number;
-  title: string;
-  content: string;
-  userId: number;
-  createdAt: string;
-  updatedAt: string;
-  User: { username: string };
-}
+import { Post, Guide } from "../interfaces/interface";
 
 const Home: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -114,7 +94,7 @@ const Home: React.FC = () => {
                   {guide.title}
                 </h3>
                 <p className="mt-2 text-gray-600 line-clamp-3">
-                  {guide.content.replace(/#+\s/g, "")}
+                  {guide.description.replace(/#+\s/g, "")}
                 </p>
                 <p className="mt-2 text-sm text-gray-500">
                   By {guide.User.username} on{" "}
