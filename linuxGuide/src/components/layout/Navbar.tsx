@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="bg-white shadow-md p-4">
-      <div className="flex justify-between items-center max-w-6xl mx-auto">
+      <div className="flex justify-between items-center max-w-full mx-auto">
         {/* Title/Logo Section */}
         <Link to="/" className="flex items-center space-x-2 group">
           <FaLinux className="text-3xl text-blue-600 group-hover:text-blue-800 transition" />
