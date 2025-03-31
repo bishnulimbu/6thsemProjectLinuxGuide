@@ -1,174 +1,110 @@
-// import React, { useEffect, useState } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import ReactMarkdown from "react-markdown";
-// import {
-//   getPostById,
-//   getComments,
-//   createComment,
-//   deleteComment,
-// } from "../services/api";
-// import { toast } from "react-toastify";
-// import { useAuth } from "../context/AuthContext";
-//
-// interface Post {
-//   id: number;
-//   title: string;
-//   content: string;
-//   tags: string;
-//   status: "draft" | "published" | "archived";
-//   userId: number;
-//   createdAt: string;
-//   updatedAt: string;
-//   User: { username: string };
-// }
-//
-// interface Comment {
-//   id: number;
-//   content: string;
-//   userId: number;
-//   guideId: number | null;
-//   postId: number | null;
-//   createdAt: string;
-//   User: { username: string };
-// }
-//
-// const PostDetail: React.FC = () => {
-//   const { id } = useParams<{ id: string }>();
-//   const { userId, role } = useAuth();
-//   const navigate = useNavigate();
-//   const [post, setPost] = useState<Post | null>(null);
-//   const [comments, setComments] = useState<Comment[]>([]);
-//   const [newComment, setNewComment] = useState("");
-//   const [loading, setLoading] = useState(true);
-//
-//   useEffect(() => {
-//     const fetchPostAndComments = async () => {
-//       try {
-//         const [postData, commentsData] = await Promise.all([
-//           getPostById(Number(id)),
-//           getComments(undefined, Number(id)),
-//         ]);
-//         setPost(postData);
-//         setComments(commentsData);
-//       } catch (err: any) {
-//         toast.error(
-//           err.response?.data?.error || "Failed to fetch post or comments",
-//         );
-//         if (err.response?.status === 404) {
-//           navigate("/not-found");
-//         }
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//
-//     fetchPostAndComments();
-//   }, [id, navigate]);
-//
-//   const handleCommentSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     if (!newComment.trim()) {
-//       toast.error("Comment cannot be empty");
-//       return;
-//     }
-//
-//     try {
-//       const comment = await createComment({
-//         content: newComment,
-//         postId: Number(id),
-//       });
-//       setComments([comment, ...comments]);
-//       setNewComment("");
-//       toast.success("Comment added successfully");
-//     } catch (err: any) {
-//       toast.error(err.response?.data?.error || "Failed to add comment");
-//     }
-//   };
-//
-//   const handleDeleteComment = async (commentId: number) => {
-//     try {
-//       await deleteComment(commentId);
-//       setComments(comments.filter((comment) => comment.id !== commentId));
-//       toast.success("Comment deleted successfully");
-//     } catch (err: any) {
-//       toast.error(err.response?.data?.error || "Failed to delete comment");
-//     }
-//   };
-//
-//   if (loading) {
-//     return <div>Loading...</div>;
-//   }
-//
-//   if (!post) {
-//     return <div>Post not found</div>;
-//   }
-//
-//   return (
-//     <div className="mt-5">
-//       <h1 className="text-3xl font-bold">{post.title}</h1>
-//       <p className="mt-2">
-//         By <strong>{post.User.username}</strong> on{" "}
-//         {new Date(post.createdAt).toLocaleDateString()} | Tags: {post.tags} |
-//         Status: {post.status}
-//       </p>
-//       <div className="border border-gray-200 p-5 rounded-md mt-2">
-//         <ReactMarkdown>{post.content}</ReactMarkdown>
-//       </div>
-//
-//       <div className="mt-10">
-//         <h2 className="text-2xl font-semibold">Comments</h2>
-//         {userId ? (
-//           <form
-//             onSubmit={handleCommentSubmit}
-//             className="flex flex-col gap-2 mb-5"
-//           >
-//             <textarea
-//               value={newComment}
-//               onChange={(e) => setNewComment(e.target.value)}
-//               placeholder="Add a comment..."
-//               className="p-2 border border-gray-200 rounded-md min-h-[100px]"
-//               required
-//             />
-//             <button
-//               type="submit"
-//               className="p-2 bg-blue-500 text-white border-none rounded-md cursor-pointer hover:bg-blue-600"
-//             >
-//               Post Comment
-//             </button>
-//           </form>
-//         ) : (
-//           <p>Please log in to add a comment.</p>
-//         )}
-//
-//         {comments.length === 0 ? (
-//           <p>No comments yet.</p>
-//         ) : (
-//           <ul className="list-none p-0">
-//             {comments.map((comment) => (
-//               <li
-//                 key={comment.id}
-//                 className="border border-gray-200 p-2 mb-2 rounded-md"
-//               >
-//                 <p>{comment.content}</p>
-//                 <p>
-//                   By <strong>{comment.User.username}</strong> on{" "}
-//                   {new Date(comment.createdAt).toLocaleDateString()}
-//                 </p>
-//                 {(comment.userId === userId || role === "super_admin") && (
-//                   <button
-//                     onClick={() => handleDeleteComment(comment.id)}
-//                     className="bg-red-500 text-white border-none py-1 px-2 rounded-md cursor-pointer hover:bg-red-600"
-//                   >
-//                     Delete
-//                   </button>
-//                 )}
-//               </li>
-//             ))}
-//           </ul>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-//
-// export default PostDetail;
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { getPostById } from "../services/api";
+import { Post } from "../interfaces/interface";
+
+const PostDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // Get the post ID from the URL
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch the post when the component mounts
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (!id) {
+        setError("Invalid post ID.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const postData = await getPostById(parseInt(id));
+        setPost(postData);
+      } catch (err: any) {
+        const errorMessage =
+          err.response?.data?.error || err.message || "Failed to fetch post.";
+        setError(errorMessage);
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <p className="text-gray-600 text-lg">Loading...</p>
+      </div>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md text-center">
+          <p className="text-red-600 mb-4">{error || "Post not found."}</p>
+          <Link
+            to="/posts"
+            className="inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Back to Posts
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-4xl p-8 bg-white rounded-lg shadow-md">
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">{post.title}</h1>
+        <div className="flex flex-wrap items-center text-gray-600 mb-4">
+          <p>
+            By{" "}
+            <span className="font-semibold">
+              {post.User?.username || "Unknown"}
+            </span>
+          </p>
+          <span className="mx-2">•</span>
+          <p>{new Date(post.createdAt).toLocaleDateString()}</p>
+        </div>
+        {post.Tags && post.Tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-6">
+            {post.Tags.map((tag, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+              >
+                {tag.name}
+              </span>
+            ))}
+          </div>
+        )}
+        <div className="prose max-w-none text-gray-700 mb-8">
+          <p>{post.content}</p>
+        </div>
+        <Link
+          to="/posts"
+          className="inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Back to Posts
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+export default PostDetail;
