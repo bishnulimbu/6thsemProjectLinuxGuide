@@ -5,20 +5,32 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import { jwtDecode } from "jwt-decode";
 import { login, signup, adminSignup } from "../services/api";
+
+interface User {
+  id: number;
+  username: string;
+  role: string;
+}
 
 interface AuthContextType {
   token: string | null;
-  role: string | null;
+  user: User | null;
   isAuthenticated: boolean;
   isSuperAdmin: boolean;
   isAdmin: boolean;
+  isLoading: boolean; // Added loading state
   loginUser: (username: string, password: string) => Promise<void>;
-  signupUser: (username: string, password: string) => Promise<void>;
+  signupUser: (
+    username: string,
+    email: string,
+    password: string,
+  ) => Promise<void>;
   adminSignupUser: (
     username: string,
+    email: string,
     password: string,
-    role: string,
   ) => Promise<void>;
   logout: () => void;
 }
@@ -27,10 +39,8 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-//authcontext with a default value undefined.
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-//custom hook to use the authcontext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -41,67 +51,118 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
-  const [role, setRole] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
 
+  // Load token from localStorage and decode user details on mount
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedRole = localStorage.getItem("role");
-    if (storedToken && storedRole) {
-      setToken(storedToken);
-      setRole(storedRole);
-    }
+    const restoreAuthState = async () => {
+      setIsLoading(true);
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        try {
+          // Check if the token is expired
+          const decoded: User & { exp: number } = jwtDecode(storedToken);
+          const currentTime = Date.now() / 1000; // Current time in seconds
+          if (decoded.exp < currentTime) {
+            console.log("Token expired, logging out");
+            setToken(null);
+            setUser(null);
+            localStorage.removeItem("token");
+          } else {
+            setToken(storedToken);
+            setUser(decoded);
+            console.log("Decoded user on mount:", decoded);
+          }
+        } catch (err) {
+          console.error("Invalid token on mount:", err);
+          setToken(null);
+          setUser(null);
+          localStorage.removeItem("token");
+        }
+      }
+      setIsLoading(false);
+    };
+
+    restoreAuthState();
   }, []);
 
   const loginUser = async (username: string, password: string) => {
     try {
-      const { token, role } = await login(username, password);
+      const { token } = await login(username, password);
       setToken(token);
-      setRole(role);
-      localStorage.setItem("role", role);
-      localStorage.setItem("role", role);
+      localStorage.setItem("token", token);
+      const decoded: User = jwtDecode(token);
+      console.log("Decoded user after login:", decoded);
+      setUser(decoded);
     } catch (err: any) {
-      throw err;
+      console.error("Login error:", err);
+      throw new Error(err.message || "Login failed");
     }
   };
 
-  const signupUser = async (username: string, password: string) => {
+  const signupUser = async (
+    username: string,
+    email: string,
+    password: string,
+  ) => {
     try {
-      await signup(username, password);
+      await signup(username, email, password);
       await loginUser(username, password);
-    } catch (err) {
-      throw err;
+    } catch (err: any) {
+      console.error("Signup error:", err);
+      throw new Error(err.message || "Signup failed");
     }
   };
 
   const adminSignupUser = async (
     username: string,
+    email: string,
     password: string,
-    role: string,
   ) => {
     try {
-      await adminSignup(username, password, role);
+      await adminSignup({ username, email, password });
     } catch (err: any) {
-      throw err;
+      console.error("Admin signup error:", err);
+      throw new Error(err.message || "Admin signup failed");
     }
   };
 
   const logout = () => {
-    setToken(null);
-    setRole(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
+    try {
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("keepLoggedIn");
+    } catch (err) {
+      console.error("Error during logout:", err);
+    }
   };
 
   const isAuthenticated = !!token;
-  const isSuperAdmin = role === "super_admin";
-  const isAdmin = role === "admin" || role === "super_admin";
+  const isSuperAdmin = user ? user.role === "super_admin" : false;
+  const isAdmin = user
+    ? user.role === "admin" || user.role === "super_admin"
+    : false;
+
+  useEffect(() => {
+    console.log("Auth state:", {
+      token,
+      user,
+      isAuthenticated,
+      isSuperAdmin,
+      isAdmin,
+      isLoading,
+    });
+  }, [token, user, isAuthenticated, isSuperAdmin, isAdmin, isLoading]);
 
   const value: AuthContextType = {
     token,
-    role,
+    user,
     isAuthenticated,
     isSuperAdmin,
     isAdmin,
+    isLoading, // Added to context
     loginUser,
     signupUser,
     adminSignupUser,
