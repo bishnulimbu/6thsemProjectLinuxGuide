@@ -5,6 +5,7 @@ const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
 const guideRoutes = require("./routes/guides");
 const commentRoutes = require("./routes/comments");
+const contactRoutes = require("./routes/contact");
 require("dotenv").config();
 
 const app = express();
@@ -18,6 +19,7 @@ app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
 app.use("/guides", guideRoutes);
 app.use("/comments", commentRoutes);
+app.use("/contact", contactRoutes);
 
 (async () => {
   try {
