@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,13 +7,28 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
-  const { loginUser, token } = useAuth();
+  const [loading, setLoading] = useState(false); // Added loading state
+  const { loginUser, token, isAdmin } = useAuth(); // Added isAdmin
   const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (token) {
+      if (isAdmin) {
+        navigate("/admin");
+      } else {
+        navigate("/guides");
+      }
+    }
+  }, [token, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await loginUser(username, password);
+      // Store keepLoggedIn preference (optional: could affect token expiration on backend)
+      localStorage.setItem("keepLoggedIn", JSON.stringify(keepLoggedIn));
       toast.success("Login successful!", {
         position: "top-right",
         autoClose: 3000,
@@ -23,12 +38,12 @@ const Login: React.FC = () => {
         draggable: true,
         theme: "light",
       });
-      navigate("/guide");
+      // Navigation is handled by useEffect
     } catch (err: any) {
       const errorMessage =
-        err.status === 401
+        err.message === "Invalid username or password"
           ? "Invalid username or password."
-          : err.status === 400
+          : err.message === "Username and password are required"
             ? "Username and password are required."
             : err.message || "Login failed. Please try again.";
       toast.error(errorMessage, {
@@ -40,6 +55,8 @@ const Login: React.FC = () => {
         draggable: true,
         theme: "light",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,10 +68,10 @@ const Login: React.FC = () => {
             You are already logged in.
           </p>
           <button
-            onClick={() => navigate("/guide")}
+            onClick={() => navigate(isAdmin ? "/admin" : "/guide")} // Dynamic redirect
             className="w-full bg-blue-600 text-white py-2.5 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
           >
-            Go to Guides
+            Go to {isAdmin ? "Admin Dashboard" : "Guides"}
           </button>
         </div>
       </div>
@@ -83,6 +100,7 @@ const Login: React.FC = () => {
               required
               placeholder="admin@gmail.com"
               className="p-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+              disabled={loading}
             />
           </div>
           <div className="flex flex-col">
@@ -101,6 +119,7 @@ const Login: React.FC = () => {
               required
               placeholder="••••••••"
               className="p-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+              disabled={loading}
             />
           </div>
           <div className="flex items-center space-x-2">
@@ -110,6 +129,7 @@ const Login: React.FC = () => {
               checked={keepLoggedIn}
               onChange={(e) => setKeepLoggedIn(e.target.checked)}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              disabled={loading}
             />
             <label htmlFor="keep-logged-in" className="text-sm text-gray-600">
               Keep me logged in
@@ -117,9 +137,14 @@ const Login: React.FC = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+            disabled={loading}
+            className={`w-full py-2.5 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 ${
+              loading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
         <p className="text-sm text-gray-600 mt-4 text-center">
