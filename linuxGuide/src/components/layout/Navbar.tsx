@@ -6,18 +6,43 @@ import { toast } from "react-toastify";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { token, role, logout } = useAuth();
+  const { token, user, isLoading, logout } = useAuth(); // Updated to use user and isLoading
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    toast.success("Logged out successfully.");
+    toast.success("Logged out successfully.", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+    });
     navigate("/login");
   };
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  // Show a loading state while auth is being restored
+  if (isLoading) {
+    return (
+      <nav className="bg-white shadow-md p-4">
+        <div className="flex justify-between items-center max-w-full mx-auto">
+          <Link to="/" className="flex items-center space-x-2 group">
+            <FaLinux className="text-3xl text-blue-600 group-hover:text-blue-800 transition" />
+            <h1 className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent group-hover:from-blue-700 group-hover:to-blue-900 transition">
+              Linux Guide
+            </h1>
+          </Link>
+          <div className="text-gray-600">Loading...</div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="bg-white shadow-md p-4">
@@ -35,6 +60,7 @@ const Navbar: React.FC = () => {
           <button
             onClick={toggleMenu}
             className="text-gray-600 focus:outline-none"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
           >
             {isOpen ? (
               <FaTimes className="text-2xl" />
@@ -53,20 +79,20 @@ const Navbar: React.FC = () => {
             Home
           </Link>
           <Link
-            to="/guide"
+            to="/guides"
             className="text-gray-600 hover:text-blue-600 transition font-medium"
           >
             Guides
           </Link>
           <Link
-            to="/post"
+            to="/posts"
             className="text-gray-600 hover:text-blue-600 transition font-medium"
           >
             Posts
           </Link>
           {token ? (
             <>
-              {role === "super_admin" && (
+              {(user?.role === "admin" || user?.role === "super_admin") && ( // Updated to allow both admin and super_admin
                 <Link
                   to="/admin"
                   className="text-gray-600 hover:text-blue-600 transition font-medium"
@@ -126,7 +152,7 @@ const Navbar: React.FC = () => {
           </Link>
           {token ? (
             <>
-              {role === "super_admin" && (
+              {(user?.role === "admin" || user?.role === "super_admin") && ( // Updated to allow both admin and super_admin
                 <Link
                   to="/admin"
                   className="text-gray-600 hover:text-blue-600 transition font-medium"
