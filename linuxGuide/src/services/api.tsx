@@ -48,36 +48,39 @@ export const login = async (
     throw new ApiError(err.message || "Signup failed", err.status);
   }
 };
-
+// Rename createAdminUser to adminSignup for consistency
+export const adminSignup = async (data: {
+  username: string;
+  email: string;
+  password: string;
+}): Promise<{
+  message: string;
+  user: { id: number; username: string; email: string; role: string };
+}> => {
+  try {
+    const response = await api.post("/auth/admin-signup", data);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || "Failed to create admin user",
+      err.status,
+    );
+  }
+};
 export const signup = async (
   username: string,
   password: string,
+  email: string,
 ): Promise<{ message: string; useId: number; role: string }> => {
   try {
     const response = await api.post("/auth/signup", {
       username,
       password,
+      email,
     });
     return response.data;
   } catch (err: any) {
     throw new ApiError(err.message || "Singup failed", err.status);
-  }
-};
-
-export const adminSignup = async (
-  username: string,
-  password: string,
-  role: string,
-): Promise<{ message: string; userId: number; role: string }> => {
-  try {
-    const response = await api.post("/auth/admin-signup", {
-      username,
-      password,
-      role,
-    });
-    return response.data;
-  } catch (err: any) {
-    throw new ApiError(err.message || "Admin singup failed", err.status);
   }
 };
 
@@ -112,12 +115,23 @@ export const getPosts = async (): Promise<Post[]> => {
     throw new ApiError(err.messsage || "failed to fetch posts", err.status);
   }
 };
+// Get a single post by ID (GET /api/posts/:id)
+export const getPostById = async (id: number): Promise<Post> => {
+  try {
+    const response = await api.get(`/posts/${id}`);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || `Failed to fetch post with ID ${id}`,
+      err.status,
+    );
+  }
+};
 
 export const createPost = async (post: {
   title: string;
   content: string;
-  tags: string;
-  status: "draft" | "published" | "archived";
+  tags: string[];
 }): Promise<Post> => {
   try {
     const response = await api.post("/posts", post);
@@ -238,6 +252,36 @@ export const deletePost = async (id: number): Promise<{ message: string }> => {
   } catch (err: any) {
     throw new ApiError(
       err.message || `Failed to delete post with id ${id}`,
+      err.status,
+    );
+  }
+};
+export const submitContactForm = async (data: {
+  name: string;
+  email: string;
+  message: string;
+}) => {
+  try {
+    const response = await api.post("/contact", data);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || "Failed to submit contact form",
+      err.status,
+    );
+  }
+};
+// Update guide status (PATCH /api/guides/:id)
+export const updateGuideStatus = async (
+  id: number,
+  status: "draft" | "published",
+): Promise<{ message: string; guide: Guide }> => {
+  try {
+    const response = await api.patch(`/guides/${id}`, { status });
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || `Failed to update guide status for ID ${id}`,
       err.status,
     );
   }
