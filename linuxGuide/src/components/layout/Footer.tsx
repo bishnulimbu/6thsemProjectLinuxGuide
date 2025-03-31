@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
             Contact
           </Link>
           <a
-            href="https://github.com"
+            href="https://github.com/bishnulimbu/6thsemProjectLinuxGuide"
             target="_blank"
             rel="noopener noreferrer"
             className="no-underline text-blue-500 hover:underline"
