@@ -78,9 +78,11 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { username, password, role } = req.body;
+    const { email, username, password, role } = req.body;
     try {
-      const existingUser = await User.findOne({ where: { username } });
+      const existingUser = await User.findOne({
+        where: { [Op.or]: [{ username }, { email }] },
+      });
       if (existingUser) {
         logger.warn(
           `Admin signup failed: Username already exists - ${username}`,
@@ -89,6 +91,7 @@ router.post(
       }
       const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds for bcrypt
       const user = await User.create({
+        email,
         username,
         password: hashedPassword,
         role,
