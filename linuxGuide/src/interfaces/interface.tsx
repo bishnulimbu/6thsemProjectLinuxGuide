@@ -20,17 +20,19 @@ export interface Guide {
   updatedAt: string;
   User: { username: string };
 }
+export interface Tag {
+  name: string;
+}
 
 export interface Post {
   id: number;
   title: string;
   content: string;
-  tags: string;
-  status: "draft" | "published" | "archived";
   userId: number;
-  User: { username: string };
   createdAt: string;
   updatedAt: string;
+  User?: { username: string };
+  Tags?: Tag[]; // Add Tags field
 }
 
 export interface Comment {
