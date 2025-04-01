@@ -7,6 +7,8 @@ import PostDetail from "../pages/PostDetail";
 import Guide from "../pages/Guide";
 import GuideDetail from "../pages/GuideDetail";
 import CreatePost from "../pages/CreatePost";
+import CreateGuide from "../pages/CreateGuide";
+import EditPost from "../pages/EditPost";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
@@ -22,7 +24,9 @@ const AppRoutes: React.FC = () => (
       <Route path="/guides" element={<Guide />} />
       <Route path="/guides/:id" element={<GuideDetail />} />
       <Route path="/posts/:id" element={<PostDetail />} />
+      <Route path="create-guide" element={<CreateGuide />} />
       <Route path="/create-post" element={<CreatePost />} />
+      <Route path="/edit-post/:id" element={<EditPost />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/admin" element={<Admin />} />
