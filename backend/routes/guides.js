@@ -7,12 +7,8 @@ const { authMiddleware, requiredRole } = require("../middleware/auth");
 router.get("/", async (req, res) => {
   try {
     const user = req.user; // From authMiddleware (optional, if logged in)
-    const isAdmin =
-      user && (user.role === "admin" || user.role === "super_admin");
-
-    const where = isAdmin ? {} : { status: "published" }; // Admins see all guides, others see only published
+    console.log(user);
     const guides = await Guide.findAll({
-      where,
       include: [{ model: User, attributes: ["username"] }],
     });
     res.status(200).json(guides);
