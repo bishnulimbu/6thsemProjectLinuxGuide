@@ -24,6 +24,19 @@ const api = axios.create({
   timeout: 10000,
 });
 
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
@@ -55,7 +68,7 @@ export const adminSignup = async (data: {
   password: string;
 }): Promise<{
   message: string;
-  user: { id: number; username: string; email: string; role: string };
+  user: { id: number; username: string; email: string };
 }> => {
   try {
     const response = await api.post("/auth/admin-signup", data);
@@ -125,6 +138,46 @@ export const getPostById = async (id: number): Promise<Post> => {
       err.message || `Failed to fetch post with ID ${id}`,
       err.status,
     );
+  }
+};
+//update post
+export const updatePost = async (
+  id: number,
+  post: { title: string; content: string; tags: string[] },
+): Promise<Post> => {
+  try {
+    const response = await api.put(`/posts/${id}`, post);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(err.message || "Failed to update post.", err.status);
+  }
+};
+//craet guide
+export const createGuide = async (guide: {
+  title: string;
+  description: string;
+  status: "draft" | "published";
+}): Promise<Guide> => {
+  try {
+    const response = await api.post("/guides", guide);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(
+      err.message || "Falied to create new guide.",
+      err.status,
+    );
+  }
+};
+//guide update
+export const updateGuide = async (
+  id: number,
+  guide: { title: string; description: string; status: "draft" | "published" },
+): Promise<Guide> => {
+  try {
+    const response = await api.put(`/guides/${id}`, guide);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(err.message || "Failed to update guide.", err.status);
   }
 };
 
