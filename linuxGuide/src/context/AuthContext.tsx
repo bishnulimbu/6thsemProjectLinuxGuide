@@ -122,6 +122,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   ) => {
     try {
       await adminSignup({ username, email, password });
+      await loginUser(username, password);
     } catch (err: any) {
       console.error("Admin signup error:", err);
       throw new Error(err.message || "Admin signup failed");
