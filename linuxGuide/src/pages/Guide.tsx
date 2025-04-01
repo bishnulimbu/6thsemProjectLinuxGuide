@@ -6,7 +6,7 @@ import { getGuides } from "../services/api";
 import { toast } from "react-toastify";
 
 const Guides: React.FC = () => {
-  const { isAdmin, isAuthenticated } = useAuth();
+  const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const [guides, setGuides] = useState<Guide[]>([]);
   const [loading, setLoading] = useState(false);
