@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -8,15 +8,17 @@ import {
   updateGuideStatus,
   deleteGuide,
   deletePost,
+  deleteUser,
   adminSignup,
+  getUsers,
 } from "../services/api";
-import { Guide, Post } from "../interfaces/interface";
+import { Guide, Post, User } from "../interfaces/interface";
 import { FaEdit, FaTrash, FaEye, FaPlus, FaMinus } from "react-icons/fa";
 
 const Admin: React.FC = () => {
   const { isAdmin, user, isLoading } = useAuth(); // Added isLoading
-  const navigate = useNavigate();
   const [guides, setGuides] = useState<Guide[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,22 +31,6 @@ const Admin: React.FC = () => {
   const [adminFormLoading, setAdminFormLoading] = useState(false);
   const [adminFormError, setAdminFormError] = useState<string | null>(null);
 
-  // Redirect if not an admin, but only after loading is complete
-  useEffect(() => {
-    if (!isLoading && !isAdmin) {
-      toast.error("You are not authorized to access the Admin page.", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-      });
-      navigate("/");
-    }
-  }, [isAdmin, isLoading, navigate]);
-
   // Fetch guides and posts
   useEffect(() => {
     const fetchData = async () => {
@@ -52,12 +38,14 @@ const Admin: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const [guidesData, postsData] = await Promise.all([
+        const [guidesData, postsData, usersData] = await Promise.all([
           getGuides(),
           getPosts(),
+          getUsers(),
         ]);
         setGuides(guidesData);
         setPosts(postsData);
+        setUsers(usersData);
       } catch (err: any) {
         setError("Failed to fetch data. Please try again later.");
         toast.error("Failed to fetch data", {
@@ -124,15 +112,18 @@ const Admin: React.FC = () => {
         theme: "light",
       });
     } catch (err: any) {
-      toast.error("Failed to delete guide", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-      });
+      toast.error(
+        "Failed to delete guide. You can only delete your own guide.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+        },
+      );
     }
   };
 
@@ -152,7 +143,34 @@ const Admin: React.FC = () => {
         theme: "light",
       });
     } catch (err: any) {
-      toast.error("Failed to delete post", {
+      toast.error("Failed to delete post.You can only delete your own posts.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    }
+  };
+  //Hanlde delete user
+  const handleDeleteUser = async (id: number) => {
+    if (!window.confirm("Are you sure you want to delet this user?")) return;
+    try {
+      await deleteUser(id);
+      setUsers(users.filter((user) => user.id !== id));
+      toast.success("User deleted successfully", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    } catch (err: any) {
+      toast.error("Failed to delete user", {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -335,6 +353,78 @@ const Admin: React.FC = () => {
           )}
         </section>
       )}
+      {/* User Section */}
+      <section aria-labelledby="users-heading" className="mb-10">
+        <div className="flex justify-between items-center mb-4">
+          <h2
+            id="users-heading"
+            className="text-2xl font-semibold text-gray-800"
+          >
+            Manage Users
+          </h2>
+        </div>
+        {loading ? (
+          <p className="text-center text-gray-500">Loading...</p>
+        ) : error ? (
+          <p className="text-center text-red-600">{error}</p>
+        ) : users.length === 0 ? (
+          <p className="text-center text-gray-500">No Users available.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-gray-50 rounded-lg">
+              <thead>
+                <tr className="bg-gray-200 text-gray-700">
+                  <th className="py-3 px-4 text-left">Username</th>
+                  <th className="py-3 px-4 text-left">Email</th>
+                  <th className="py-3 px-4 text-left">Role</th>
+                  <th className="py-3 px-4 text-left">Created</th>
+                  <th className="py-3 px-4 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user.id} className="border-b hover:bg-gray-100">
+                    <td className="py-3 px-4">{user.username}</td>
+                    <td className="py-3 px-4">
+                      {user.email || "No User Email"}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm ${
+                          user.role === "super_admin"
+                            ? "bg-purple-100 text-purple-800"
+                            : user.role === "admin"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="py-3 px-4 flex space-x-2">
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className={`text-red-600 hover:text-red-800 ${
+                          user.role === "super_admin"
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                        }`}
+                        disabled={user.role === "super_admin"}
+                        aria-label={`Delete user ${user.username}`}
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
 
       {/* Guides Section */}
       <section aria-labelledby="guides-heading" className="mb-10">
