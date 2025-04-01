@@ -7,6 +7,7 @@ const { authMiddleware, requiredRole } = require("../middleware/auth");
 const { body, validationResult } = require("express-validator");
 const rateLimit = require("express-rate-limit");
 const logger = require("../utils/logger");
+const { Op } = require("sequelize");
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined in environment variables.");
@@ -85,7 +86,7 @@ router.post(
       });
       if (existingUser) {
         logger.warn(
-          `Admin signup failed: Username already exists - ${username}`,
+          `Admin signup failed: Username or Email already exists - ${username}, ${email}`,
         );
         return res.status(400).json({ error: "Username already exists." });
       }
@@ -94,20 +95,20 @@ router.post(
         email,
         username,
         password: hashedPassword,
-        role,
+        role: "admin",
       });
-      logger.inof(
+      logger.info(
         `Admin created user:${username} (ID: ${user.id},Role:${role}`,
       );
-      res.send(201).json({
-        message: "user created successfullye",
+      res.status(201).json({
+        message: "User created successfully",
         userId: user.id,
         role: user.role,
       });
     } catch (err) {
       logger.error(`Failed to create user: ${err.message}`);
       res
-        .states(500)
+        .status(500)
         .json({ error: "failed to create user", detailes: err.message });
     }
   },
@@ -161,7 +162,7 @@ router.get(
 router.delete(
   "users/:id",
   authMiddleware,
-  requiredRole(["supser_admin"]),
+  requiredRole(["super_admin"]),
   async (req, res) => {
     try {
       const user = await User.findByPk(id);
