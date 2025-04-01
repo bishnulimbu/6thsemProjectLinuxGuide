@@ -7,7 +7,10 @@ export interface AuthResponse {
 export interface User {
   id: number;
   username: string;
+  email?: string;
   role: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Guide {
@@ -21,6 +24,7 @@ export interface Guide {
   User: { username: string };
 }
 export interface Tag {
+  id?: number;
   name: string;
 }
 
