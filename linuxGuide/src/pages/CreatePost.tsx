@@ -37,7 +37,7 @@ const CreatePost: React.FC = () => {
     }
 
     try {
-      const response = await createPost({ title, content, tags });
+      await createPost({ title, content, tags });
       toast.success("Post created successfully!", {
         position: "top-right",
         autoClose: 3000,
@@ -47,7 +47,7 @@ const CreatePost: React.FC = () => {
         draggable: true,
         theme: "light",
       });
-      navigate(`/posts/${response.id}`); // Navigate to the new post's detail page
+      navigate(`/posts`); // Navigate to the new post's detail page
     } catch (err: any) {
       setError(err.message || "Failed to create post. Please try again.");
       toast.error(err.message || "Failed to create post", {
