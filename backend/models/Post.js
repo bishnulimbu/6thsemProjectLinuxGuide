@@ -18,15 +18,6 @@ const Post = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    tags: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    status: {
-      type: DataTypes.ENUM("draft", "published", "archived"),
-      allowNull: false,
-      defaultValue: "draft",
-    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
