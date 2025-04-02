@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { token, user, isLoading, logout } = useAuth(); // Updated to use user and isLoading
+  const { token, user, isLoading, logout, isAdmin, isSuperAdmin } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -26,6 +26,9 @@ const Navbar: React.FC = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  // Check if the user is an admin or super admin
+  const isAdminOrSuperAdmin = isAdmin || isSuperAdmin;
 
   // Show a loading state while auth is being restored
   if (isLoading) {
@@ -72,27 +75,32 @@ const Navbar: React.FC = () => {
 
         {/* Navigation Links - Desktop */}
         <div className="hidden md:flex space-x-4">
-          <Link
-            to="/"
-            className="text-gray-600 hover:text-blue-600 transition font-medium"
-          >
-            Home
-          </Link>
-          <Link
-            to="/guides"
-            className="text-gray-600 hover:text-blue-600 transition font-medium"
-          >
-            Guides
-          </Link>
-          <Link
-            to="/posts"
-            className="text-gray-600 hover:text-blue-600 transition font-medium"
-          >
-            Posts
-          </Link>
+          {/* Show Home, Guides, and Posts links only for non-admins */}
+          {!isAdminOrSuperAdmin && (
+            <>
+              <Link
+                to="/"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+              >
+                Home
+              </Link>
+              <Link
+                to="/guides"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+              >
+                Guides
+              </Link>
+              <Link
+                to="/posts"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+              >
+                Posts
+              </Link>
+            </>
+          )}
           {token ? (
             <>
-              {(user?.role === "admin" || user?.role === "super_admin") && ( // Updated to allow both admin and super_admin
+              {(isAdmin || isSuperAdmin) && (
                 <Link
                   to="/admin"
                   className="text-gray-600 hover:text-blue-600 transition font-medium"
@@ -129,30 +137,35 @@ const Navbar: React.FC = () => {
       {/* Navigation Links - Mobile (Dropdown) */}
       {isOpen && (
         <div className="md:hidden mt-4 flex flex-col space-y-2">
-          <Link
-            to="/"
-            className="text-gray-600 hover:text-blue-600 transition font-medium"
-            onClick={toggleMenu}
-          >
-            Home
-          </Link>
-          <Link
-            to="/guides"
-            className="text-gray-600 hover:text-blue-600 transition font-medium"
-            onClick={toggleMenu}
-          >
-            Guides
-          </Link>
-          <Link
-            to="/posts"
-            className="text-gray-600 hover:text-blue-600 transition font-medium"
-            onClick={toggleMenu}
-          >
-            Posts
-          </Link>
+          {/* Show Home, Guides, and Posts links only for non-admins */}
+          {!isAdminOrSuperAdmin && (
+            <>
+              <Link
+                to="/"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+                onClick={toggleMenu}
+              >
+                Home
+              </Link>
+              <Link
+                to="/guides"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+                onClick={toggleMenu}
+              >
+                Guides
+              </Link>
+              <Link
+                to="/posts"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+                onClick={toggleMenu}
+              >
+                Posts
+              </Link>
+            </>
+          )}
           {token ? (
             <>
-              {(user?.role === "admin" || user?.role === "super_admin") && ( // Updated to allow both admin and super_admin
+              {(isAdmin || isSuperAdmin) && (
                 <Link
                   to="/admin"
                   className="text-gray-600 hover:text-blue-600 transition font-medium"
