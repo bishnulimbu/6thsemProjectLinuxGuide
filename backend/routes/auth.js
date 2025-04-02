@@ -145,9 +145,7 @@ router.get(
   requiredRole(["super_admin"]),
   async (req, res) => {
     try {
-      const users = await User.findAll({
-        attributes: ["id", "username", "role"],
-      });
+      const users = await User.findAll();
       res.status(200).json(users);
     } catch (err) {
       logger.error(`Falied to get users:${err.message}`);
@@ -160,26 +158,40 @@ router.get(
 
 //delete user api for admin
 router.delete(
-  "users/:id",
+  "users//:id",
   authMiddleware,
   requiredRole(["super_admin"]),
   async (req, res) => {
+    const { id } = req.params; // Extract id from route parameters
+
     try {
+      // Find the user by ID
       const user = await User.findByPk(id);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
-      if (req.user.id === parseInt(id)) {
-        return res.status(400).json({ error: "cannot delete yourself." });
+
+      // Prevent deleting a super_admin user
+      if (user.role === "super_admin") {
+        return res
+          .status(403)
+          .json({ error: "Cannot delete a super_admin user" });
       }
+
+      // Prevent self-deletion
+      if (req.user.id === parseInt(id)) {
+        return res.status(400).json({ error: "Cannot delete yourself" });
+      }
+
+      // Delete the user
       await user.destroy();
       logger.info(`User deleted: ID ${id} by super_admin ${req.user.id}`);
-      res.status(20).json({ message: "user successfully deleted" });
+      res.status(200).json({ message: "User successfully deleted" });
     } catch (err) {
-      logger.erro(`Failed to delete user: ${err.message}`);
+      logger.error(`Failed to delete user: ${err.message}`);
       res
         .status(500)
-        .json({ error: "Falied to delte user", details: err.message });
+        .json({ error: "Failed to delete user", details: err.message });
     }
   },
 );
