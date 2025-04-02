@@ -9,15 +9,13 @@ const User = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      unique: true,
-    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     password: {
       type: DataTypes.STRING(60),
@@ -29,7 +27,19 @@ const User = sequelize.define(
       defaultValue: "user",
     },
   },
-  { tableName: "users" },
+  {
+    tableName: "users",
+    indexers: [
+      {
+        unique: true,
+        fields: ["username"],
+      },
+      {
+        unique: true,
+        fields: ["email"],
+      },
+    ],
+  },
 );
 
 module.exports = User;
