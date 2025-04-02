@@ -5,6 +5,7 @@ import { getGuideById } from "../services/api"; // Updated import path
 import { Guide } from "../interfaces/interface";
 import katex from "katex";
 import "katex/dist/katex.min.css";
+import CommentSection from "../components/ui/CommentSection";
 
 // Interface for User (to fetch username)
 interface User {
@@ -217,6 +218,8 @@ const GuideDetail: React.FC = () => {
       <div className="prose max-w-none">
         {renderDescription(guide.description)}
       </div>
+      {/* Comment Section */}
+      <CommentSection guideId={guide.id} />
     </div>
   );
 };
