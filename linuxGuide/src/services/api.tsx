@@ -252,20 +252,6 @@ export const createCommentForPost = async (
   }
 };
 
-export const deleteComment = async (
-  id: number,
-): Promise<{ message: string }> => {
-  try {
-    const response = await api.delete(`/comments/${id}`);
-    return response.data;
-  } catch (err: any) {
-    throw new ApiError(
-      err.message || "Failed to delete comment ${id}",
-      err.status,
-    );
-  }
-};
-
 //api calls for admin
 export const getUsers = async (): Promise<User[]> => {
   try {
@@ -337,6 +323,38 @@ export const updateGuideStatus = async (
       err.message || `Failed to update guide status for ID ${id}`,
       err.status,
     );
+  }
+};
+export const createComment = async (comment: {
+  content: string;
+  guideId: number | null;
+  postId: number | null;
+}): Promise<Comment> => {
+  try {
+    if (comment.guideId) {
+      const response = await api.post(`/comments/guide/${comment.guideId}`, {
+        content: comment.content,
+      });
+      return response.data;
+    } else if (comment.postId) {
+      const response = await api.post(`/comments/post/${comment.postId}`, {
+        content: comment.content,
+      });
+      return response.data;
+    } else {
+      throw new Error("guideId or postId is required");
+    }
+  } catch (err: any) {
+    throw new ApiError(err.message || "Failed to create comment", err.status);
+  }
+};
+
+// Delete a comment
+export const deleteComment = async (id: number): Promise<void> => {
+  try {
+    await api.delete(`/comments/${id}`);
+  } catch (err: any) {
+    throw new ApiError(err.message || "Failed to delete comment", err.status);
   }
 };
 
