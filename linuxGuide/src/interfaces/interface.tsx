@@ -42,6 +42,10 @@ export interface Post {
 export interface Comment {
   id: number;
   content: string;
+  userId: number;
   guideId?: number;
   postId?: number;
+  createdAt: string;
+  updatedAt: string;
+  User?: { username: string };
 }
