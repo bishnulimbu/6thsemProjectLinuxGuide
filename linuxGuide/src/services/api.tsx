@@ -357,5 +357,31 @@ export const deleteComment = async (id: number): Promise<void> => {
     throw new ApiError(err.message || "Failed to delete comment", err.status);
   }
 };
+// Fetch a specific user by ID
+export const getUserById = async (id: number): Promise<User> => {
+  try {
+    const response = await api.get(`/auth/users/${id}`);
+    return response.data;
+  } catch (err: any) {
+    throw new ApiError(err.message || "Failed to fetch user", err.status);
+  }
+};
+
+// Update a user
+export const updateUser = async (
+  id: number,
+  userData: {
+    username?: string;
+    email?: string;
+    password?: string;
+    role?: string;
+  },
+): Promise<void> => {
+  try {
+    await api.put(`/auth/users/${id}`, userData);
+  } catch (err: any) {
+    throw new ApiError(err.message || "Failed to update user", err.status);
+  }
+};
 
 export default api;
