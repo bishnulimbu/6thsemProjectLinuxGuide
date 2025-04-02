@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Fixed import
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -11,18 +11,21 @@ import {
   deleteUser,
   adminSignup,
   getUsers,
+  getUserById,
+  updateUser,
 } from "../services/api";
 import { Guide, Post, User } from "../interfaces/interface";
 import { FaEdit, FaTrash, FaEye, FaPlus, FaMinus } from "react-icons/fa";
 
 const Admin: React.FC = () => {
-  const { isAdmin, user, isLoading, isSuperAdmin } = useAuth(); // Added isLoading
+  const { isAdmin, user, isLoading, isSuperAdmin } = useAuth();
   const [guides, setGuides] = useState<Guide[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCreateAdminForm, setShowCreateAdminForm] = useState(false);
+  const navigate = useNavigate(); // Fixed usage
   const [adminForm, setAdminForm] = useState({
     username: "",
     email: "",
@@ -30,25 +33,55 @@ const Admin: React.FC = () => {
   });
   const [adminFormLoading, setAdminFormLoading] = useState(false);
   const [adminFormError, setAdminFormError] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch guides and posts
+  // Fetch guides, posts, and users
   useEffect(() => {
     const fetchData = async () => {
-      if (!isAdmin) return;
+      // Wait for auth loading to complete and check if user is admin
+      if (isLoading) return;
+      if (!isAdmin) {
+        setError("You do not have permission to access this page.");
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       setError(null);
       try {
-        const [guidesData, postsData, usersData] = await Promise.all([
+        const [guidesData, postsData] = await Promise.all([
           getGuides(),
           getPosts(),
-          getUsers(),
         ]);
         setGuides(guidesData);
         setPosts(postsData);
-        setUsers(usersData);
+        if (isSuperAdmin) {
+          try {
+            const userData = await getUsers();
+            setUsers(userData);
+          } catch (userErr: any) {
+            toast.error(
+              "Failed to fetch users: " + (userErr.message || "Unknown error"),
+              {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "light",
+              },
+            );
+          }
+        } else {
+          setUsers([]);
+        }
       } catch (err: any) {
-        setError("Failed to fetch data. Please try again later.");
-        toast.error("Failed to fetch data", {
+        const errorMessage =
+          err.message || "Failed to fetch data. Please try again later.";
+        setError(errorMessage);
+        toast.error(errorMessage, {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: false,
@@ -62,8 +95,31 @@ const Admin: React.FC = () => {
       }
     };
     fetchData();
-  }, [isAdmin]);
+  }, [isAdmin, isLoading, isSuperAdmin]); // Added isLoading to dependencies
 
+  // Handle edit user
+  const handleEditUser = (userId: number) => {
+    navigate(`/admin/edit-user/${userId}`); // Navigate to the edit user page
+  };
+
+  // Handle view user
+  const handleViewUser = async (userId: number) => {
+    try {
+      const userData = await getUserById(userId); // Fetch user details using the API function
+      setSelectedUser(userData); // Set the user data to display in a modal
+      setIsModalOpen(true); // Open the modal to view user details
+    } catch (err: any) {
+      toast.error(err.message || "Failed to fetch user details", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+    }
+  };
   // Handle guide status toggle
   const handleToggleStatus = async (guide: Guide) => {
     const newStatus = guide.status === "published" ? "draft" : "published";
@@ -410,6 +466,22 @@ const Admin: React.FC = () => {
                       </td>
                       <td className="py-3 px-4 flex space-x-2">
                         <button
+                          onClick={() => handleEditUser(user.id)} // Assuming handleEditUser is defined
+                          className="text-blue-600 hover:text-blue-800"
+                          aria-label={`Edit user ${user.username}`}
+                        >
+                          <FaEdit />{" "}
+                          {/* Assuming FaEdit is imported from react-icons */}
+                        </button>
+                        <button
+                          onClick={() => handleViewUser(user.id)} // Assuming handleViewUser is defined
+                          className="text-green-600 hover:text-green-800"
+                          aria-label={`View details of user ${user.username}`}
+                        >
+                          <FaEye />{" "}
+                          {/* Assuming FaEye is imported from react-icons */}
+                        </button>
+                        <button
                           onClick={() => handleDeleteUser(user.id)}
                           className={`text-red-600 hover:text-red-800 ${
                             user.role === "super_admin"
@@ -431,7 +503,74 @@ const Admin: React.FC = () => {
         </section>
       )}
 
-      {/* Guides Section */}
+      {/* Modal for viewing user details */}
+      {isModalOpen && selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+              aria-label="Close modal"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              User Details
+            </h2>
+            <div className="space-y-3">
+              <p className="text-gray-700">
+                <span className="font-semibold">ID:</span> {selectedUser.id}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Username:</span>{" "}
+                {selectedUser.username}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Email:</span>{" "}
+                {selectedUser.email || "Not provided"}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Role:</span> {selectedUser.role}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Created At:</span>{" "}
+                {selectedUser.createdAt
+                  ? new Date(selectedUser.createdAt).toLocaleDateString()
+                  : "Not available"}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Updated At:</span>{" "}
+                {selectedUser.updatedAt
+                  ? new Date(selectedUser.updatedAt).toLocaleDateString()
+                  : "Not available"}
+              </p>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Guide Section */}
       <section aria-labelledby="guides-heading" className="mb-10">
         <div className="flex justify-between items-center mb-4">
           <h2
