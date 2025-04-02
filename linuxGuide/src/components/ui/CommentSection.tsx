@@ -216,7 +216,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ guideId, postId }) => {
       )}
 
       {/* Add Comment Form */}
-      {token && (
+      {
         <form onSubmit={handleSubmit} className="mt-6">
           <textarea
             value={newComment}
@@ -239,7 +239,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ guideId, postId }) => {
             {submitting ? "Posting..." : "Post Comment"}
           </button>
         </form>
-      )}
+      }
     </div>
   );
 };
