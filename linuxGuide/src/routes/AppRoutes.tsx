@@ -13,6 +13,8 @@ import About from "../pages/About";
 import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
 import Admin from "../pages/Admin";
+import EditUser from "../pages/EditUser";
+import EditGuide from "../pages/EditGuide";
 
 const AppRoutes: React.FC = () => (
   <main>
@@ -27,6 +29,8 @@ const AppRoutes: React.FC = () => (
       <Route path="create-guide" element={<CreateGuide />} />
       <Route path="/create-post" element={<CreatePost />} />
       <Route path="/edit-post/:id" element={<EditPost />} />
+      <Route path="/edit-guide/:id" element={<EditGuide />} />
+      <Route path="/admin/edit-user/:id" element={<EditUser />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/admin" element={<Admin />} />
