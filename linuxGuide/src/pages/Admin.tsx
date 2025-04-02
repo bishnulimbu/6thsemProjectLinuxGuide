@@ -16,7 +16,7 @@ import { Guide, Post, User } from "../interfaces/interface";
 import { FaEdit, FaTrash, FaEye, FaPlus, FaMinus } from "react-icons/fa";
 
 const Admin: React.FC = () => {
-  const { isAdmin, user, isLoading } = useAuth(); // Added isLoading
+  const { isAdmin, user, isLoading, isSuperAdmin } = useAuth(); // Added isLoading
   const [guides, setGuides] = useState<Guide[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -354,77 +354,82 @@ const Admin: React.FC = () => {
         </section>
       )}
       {/* User Section */}
-      <section aria-labelledby="users-heading" className="mb-10">
-        <div className="flex justify-between items-center mb-4">
-          <h2
-            id="users-heading"
-            className="text-2xl font-semibold text-gray-800"
-          >
-            Manage Users
-          </h2>
-        </div>
-        {loading ? (
-          <p className="text-center text-gray-500">Loading...</p>
-        ) : error ? (
-          <p className="text-center text-red-600">{error}</p>
-        ) : users.length === 0 ? (
-          <p className="text-center text-gray-500">No Users available.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-gray-50 rounded-lg">
-              <thead>
-                <tr className="bg-gray-200 text-gray-700">
-                  <th className="py-3 px-4 text-left">Username</th>
-                  <th className="py-3 px-4 text-left">Email</th>
-                  <th className="py-3 px-4 text-left">Role</th>
-                  <th className="py-3 px-4 text-left">Created</th>
-                  <th className="py-3 px-4 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id} className="border-b hover:bg-gray-100">
-                    <td className="py-3 px-4">{user.username}</td>
-                    <td className="py-3 px-4">
-                      {user.email || "No User Email"}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm ${
-                          user.role === "super_admin"
-                            ? "bg-purple-100 text-purple-800"
-                            : user.role === "admin"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      {new Date(user.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="py-3 px-4 flex space-x-2">
-                      <button
-                        onClick={() => handleDeleteUser(user.id)}
-                        className={`text-red-600 hover:text-red-800 ${
-                          user.role === "super_admin"
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
-                        }`}
-                        disabled={user.role === "super_admin"}
-                        aria-label={`Delete user ${user.username}`}
-                      >
-                        <FaTrash />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {isSuperAdmin && (
+        <section aria-labelledby="users-heading" className="mb-10">
+          <div className="flex justify-between items-center mb-4">
+            <h2
+              id="users-heading"
+              className="text-2xl font-semibold text-gray-800"
+            >
+              Manage Users
+            </h2>
           </div>
-        )}
-      </section>
+          {loading ? (
+            <p className="text-center text-gray-500">Loading...</p>
+          ) : error ? (
+            <p className="text-center text-red-600">{error}</p>
+          ) : users.length === 0 ? (
+            <p className="text-center text-gray-500">No Users available.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-gray-50 rounded-lg">
+                <thead>
+                  <tr className="bg-gray-200 text-gray-700">
+                    <th className="py-3 px-4 text-left">Username</th>
+                    <th className="py-3 px-4 text-left">Email</th>
+                    <th className="py-3 px-4 text-left">Role</th>
+                    <th className="py-3 px-4 text-left">Created</th>
+                    <th className="py-3 px-4 text-left">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user.id} className="border-b hover:bg-gray-100">
+                      <td className="py-3 px-4">{user.username}</td>
+                      <td className="py-3 px-4">
+                        {user.email || "No User Email"}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm ${
+                            user.role === "super_admin"
+                              ? "bg-purple-100 text-purple-800"
+                              : user.role === "admin"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {user.role.charAt(0).toUpperCase() +
+                            user.role.slice(1)}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        {user.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString()
+                          : "No Date Available"}
+                      </td>
+                      <td className="py-3 px-4 flex space-x-2">
+                        <button
+                          onClick={() => handleDeleteUser(user.id)}
+                          className={`text-red-600 hover:text-red-800 ${
+                            user.role === "super_admin"
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }`}
+                          disabled={user.role === "super_admin"}
+                          aria-label={`Delete user ${user.username}`}
+                        >
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Guides Section */}
       <section aria-labelledby="guides-heading" className="mb-10">
