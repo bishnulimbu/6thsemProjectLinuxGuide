@@ -15,6 +15,7 @@ import NotFound from "../pages/NotFound";
 import Admin from "../pages/Admin";
 import EditUser from "../pages/EditUser";
 import EditGuide from "../pages/EditGuide";
+import TryLinux from "../pages/TryLinux";
 
 const AppRoutes: React.FC = () => (
   <main>
@@ -34,6 +35,7 @@ const AppRoutes: React.FC = () => (
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/admin" element={<Admin />} />
+      <Route path="/try-linux" element={<TryLinux />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </main>
