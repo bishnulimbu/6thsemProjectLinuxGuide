@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { token, user, isLoading, logout, isAdmin, isSuperAdmin } = useAuth();
+  const { token, isLoading, logout, isAdmin, isSuperAdmin } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -89,6 +89,13 @@ const Navbar: React.FC = () => {
                 className="text-gray-600 hover:text-blue-600 transition font-medium"
               >
                 Guides
+              </Link>
+
+              <Link
+                to="/try-linux"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+              >
+                Terminal
               </Link>
               <Link
                 to="/posts"
