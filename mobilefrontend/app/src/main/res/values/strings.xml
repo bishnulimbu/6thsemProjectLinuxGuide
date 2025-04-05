@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">mobilefrontend</string>
+    <string name="no_title">No Title</string>
+    <string name="no_content">No Content</string>
+</resources>
