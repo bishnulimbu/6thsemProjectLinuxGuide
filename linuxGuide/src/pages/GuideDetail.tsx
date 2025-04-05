@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getGuideById } from "../services/api"; // Updated import path
+import { getGuideById } from "../services/api";
 import { Guide } from "../interfaces/interface";
-import katex from "katex";
-import "katex/dist/katex.min.css";
+import ReactMarkdown from "react-markdown"; // New import
 import CommentSection from "../components/ui/CommentSection";
 
-// Interface for User (to fetch username)
 interface User {
   id: number;
   username: string;
@@ -33,15 +31,13 @@ const GuideDetail: React.FC = () => {
         const fetchData = await getGuideById(parseInt(id));
         setGuide(fetchData);
 
-        // Fetch the author's username (mocked for now; replace with actual API call)
-        // In a real app, you'd call an API like `getUserById(fetchData.userId)`
         const mockUser: User = {
           id: fetchData.userId,
           username: `User${fetchData.userId}`,
         };
         setAuthor(mockUser.username);
       } catch (err: any) {
-        setError(err.message || "Failed to fetch guide."); // Fixed typo: messaege -> message
+        setError(err.message || "Failed to fetch guide.");
         toast.error(err.message || "Failed to fetch guide by id", {
           position: "top-right",
           autoClose: 3000,
@@ -57,122 +53,6 @@ const GuideDetail: React.FC = () => {
     };
     fetchGuideById();
   }, [id]);
-
-  // Parsing and rendering LaTeX-like document
-  const renderDescription = (description: string) => {
-    const lines = description.split("\n"); // Fixed: "/n" -> "\n"
-    let skipUntilEndVerbatim = false;
-
-    return lines.map((line, index) => {
-      // Skip lines inside verbatim blocks until \end{verbatim} is found
-      if (skipUntilEndVerbatim) {
-        if (line.startsWith("\\end{verbatim}")) {
-          skipUntilEndVerbatim = false;
-        }
-        return null;
-      }
-
-      // Handle \section{...}
-      if (line.startsWith("\\section{")) {
-        const sectionTitle = line.match(/\\section\{(.+?)\}/)?.[1];
-        return (
-          <h2
-            key={index}
-            className="text-2xl font-bold text-gray-800 mt-6 mb-4"
-          >
-            {sectionTitle}
-          </h2>
-        );
-      }
-
-      // Handle \subsection{...}
-      if (line.startsWith("\\subsection{")) {
-        const subsectionTitle = line.match(/\\subsection\{(.+?)\}/)?.[1];
-        return (
-          <h3
-            key={index}
-            className="text-xl font-semibold text-gray-700 mt-4 mb-2" // Fixed: font=semibold -> font-semibold
-          >
-            {subsectionTitle}
-          </h3>
-        );
-      }
-
-      // Handle \texttt{...}
-      if (line.includes("\\texttt{")) {
-        const parts = line.split(/\\texttt\{(.+?)\}/g);
-        return (
-          <p key={index} className="text-gray-600 mb-2">
-            {parts.map((part, i) =>
-              i % 2 === 0 ? (
-                part
-              ) : (
-                <code key={i} className="font-mono bg-gray-100 px-1 rounded">
-                  {part}
-                </code>
-              ),
-            )}
-          </p>
-        );
-      }
-
-      // Handle \begin{verbatim}...\end{verbatim}
-      if (line.startsWith("\\begin{verbatim}")) {
-        const codeLines: string[] = [];
-        let nextIndex = index + 1;
-        while (
-          nextIndex < lines.length &&
-          !lines[nextIndex].startsWith("\\end{verbatim}")
-        ) {
-          codeLines.push(lines[nextIndex]);
-          nextIndex++;
-        }
-        skipUntilEndVerbatim = true; // Skip lines until \end{verbatim}
-        return (
-          <pre
-            key={index}
-            className="bg-gray-100 p-4 rounded-md font-mono text-sm text-gray-800 my-2 overflow-x-auto"
-          >
-            {codeLines.join("\n")}
-          </pre>
-        );
-      }
-
-      // Handle LaTeX equations with KaTeX
-      if (line.startsWith("\\[")) {
-        const equation = line.match(/\\\[(.+?)\\\]/)?.[1];
-        if (equation) {
-          const html = katex.renderToString(equation, {
-            throwOnError: false,
-            displayMode: true,
-          });
-          return (
-            <div
-              key={index}
-              className="text-center my-4"
-              dangerouslySetInnerHTML={{ __html: html }}
-            />
-          );
-        }
-      }
-
-      // Skip \end{verbatim} lines
-      if (line.startsWith("\\end{verbatim}")) {
-        return null;
-      }
-
-      // Render regular paragraphs
-      if (line.trim()) {
-        return (
-          <p key={index} className="text-gray-600 mb-2">
-            {line}
-          </p>
-        );
-      }
-
-      return null;
-    });
-  };
 
   if (loading) {
     return (
@@ -216,9 +96,8 @@ const GuideDetail: React.FC = () => {
         </span>
       </div>
       <div className="prose max-w-none">
-        {renderDescription(guide.description)}
+        <ReactMarkdown>{guide.description}</ReactMarkdown>
       </div>
-      {/* Comment Section */}
       <CommentSection guideId={guide.id} />
     </div>
   );
