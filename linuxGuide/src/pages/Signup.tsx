@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+// import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { signup, adminSignup } from "../services/api";
+import { signup } from "../services/api";
+//removed the adminSignup
 import { toast } from "react-toastify";
 
 const Signup: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [adminUsername, setAdminUsername] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
-  const [adminRole, setAdminRole] = useState<"super_admin" | "admin" | "user">(
-    "user",
-  );
-  const { role, token } = useAuth();
+  // const [adminUsername, setAdminUsername] = useState("");
+  // const [adminPassword, setAdminPassword] = useState("");
+  // const [adminRole, setAdminRole] = useState<"super_admin" | "admin" | "user">(
+  //   "user",
+  // );
+  // const { token } = useAuth();
   const navigate = useNavigate();
 
   const handlePublicSignup = async (e: React.FormEvent) => {
@@ -44,38 +45,38 @@ const Signup: React.FC = () => {
     }
   };
 
-  const handleAdminSign = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await adminSignup(adminUsername, adminPassword, adminRole);
-      toast.success("User created successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-      });
-      setAdminUsername("");
-      setAdminPassword("");
-      setAdminRole("user");
-    } catch (err: any) {
-      const errorMessage =
-        err.status == 400
-          ? err.message
-          : "Admin Signup falied. Please try again.";
-      toast.error(errorMessage, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-      });
-    }
-  };
+  // const handleAdminSign = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   try {
+  //     await adminSignup({username:adminUsername, password:adminPassword,});
+  //     toast.success("User created successfully!", {
+  //       position: "top-right",
+  //       autoClose: 3000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       theme: "light",
+  //     });
+  //     setAdminUsername("");
+  //     setAdminPassword("");
+  //     setAdminRole("user");
+  //   } catch (err: any) {
+  //     const errorMessage =
+  //       err.status == 400
+  //         ? err.message
+  //         : "Admin Signup falied. Please try again.";
+  //     toast.error(errorMessage, {
+  //       position: "top-right",
+  //       autoClose: 3000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       theme: "light",
+  //     });
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -132,77 +133,77 @@ const Signup: React.FC = () => {
           </Link>
         </p>
 
-        {token && role === "super_admin" && (
-          <div className="mt-8">
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">
-              Admin: Create User
-            </h4>
-            <form onSubmit={handleAdminSign} className="space-y-5">
-              <div className="flex flex-col">
-                <label
-                  htmlFor="admin-username"
-                  className="text-sm font-semibold text-gray-600 uppercase mb-2"
-                >
-                  Username
-                </label>
-                <input
-                  id="admin-username"
-                  type="text"
-                  value={adminUsername}
-                  onChange={(e) => setAdminUsername(e.target.value)}
-                  required
-                  placeholder="admin@gmail.com"
-                  className="p-3 bg-blue-50 rounded-md border-none focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label
-                  htmlFor="admin-password"
-                  className="text-sm font-semibold text-gray-600 uppercase mb-2"
-                >
-                  Password
-                </label>
-                <input
-                  id="admin-password"
-                  type="password"
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                  required
-                  placeholder="••••••••"
-                  className="p-3 bg-blue-50 rounded-md border-none focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label
-                  htmlFor="admin-role"
-                  className="text-sm font-semibold text-gray-600 uppercase mb-2"
-                >
-                  Role
-                </label>
-                <select
-                  id="admin-role"
-                  value={adminRole}
-                  onChange={(e) =>
-                    setAdminRole(
-                      e.target.value as "super_admin" | "admin" | "user",
-                    )
-                  }
-                  className="p-3 bg-blue-50 rounded-md border-none focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-                >
-                  <option value="super_admin">Super Admin</option>
-                  <option value="admin">Admin</option>
-                  <option value="user">User</option>
-                </select>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-green-600 text-white py-3 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition"
-              >
-                Create User
-              </button>
-            </form>
-          </div>
-        )}
+        {/* {token && role === "super_admin" && ( */}
+        {/*   <div className="mt-8"> */}
+        {/*     <h4 className="text-lg font-semibold text-gray-800 mb-4"> */}
+        {/*       Admin: Create User */}
+        {/*     </h4> */}
+        {/*     <form onSubmit={handleAdminSign} className="space-y-5"> */}
+        {/*       <div className="flex flex-col"> */}
+        {/*         <label */}
+        {/*           htmlFor="admin-username" */}
+        {/*           className="text-sm font-semibold text-gray-600 uppercase mb-2" */}
+        {/*         > */}
+        {/*           Username */}
+        {/*         </label> */}
+        {/*         <input */}
+        {/*           id="admin-username" */}
+        {/*           type="text" */}
+        {/*           value={adminUsername} */}
+        {/*           onChange={(e) => setAdminUsername(e.target.value)} */}
+        {/*           required */}
+        {/*           placeholder="admin@gmail.com" */}
+        {/*           className="p-3 bg-blue-50 rounded-md border-none focus:outline-none focus:ring-2 focus:ring-green-500 transition" */}
+        {/*         /> */}
+        {/*       </div> */}
+        {/*       <div className="flex flex-col"> */}
+        {/*         <label */}
+        {/*           htmlFor="admin-password" */}
+        {/*           className="text-sm font-semibold text-gray-600 uppercase mb-2" */}
+        {/*         > */}
+        {/*           Password */}
+        {/*         </label> */}
+        {/*         <input */}
+        {/*           id="admin-password" */}
+        {/*           type="password" */}
+        {/*           value={adminPassword} */}
+        {/*           onChange={(e) => setAdminPassword(e.target.value)} */}
+        {/*           required */}
+        {/*           placeholder="••••••••" */}
+        {/*           className="p-3 bg-blue-50 rounded-md border-none focus:outline-none focus:ring-2 focus:ring-green-500 transition" */}
+        {/*         /> */}
+        {/*       </div> */}
+        {/*       <div className="flex flex-col"> */}
+        {/*         <label */}
+        {/*           htmlFor="admin-role" */}
+        {/*           className="text-sm font-semibold text-gray-600 uppercase mb-2" */}
+        {/*         > */}
+        {/*           Role */}
+        {/*         </label> */}
+        {/*         <select */}
+        {/*           id="admin-role" */}
+        {/*           value={adminRole} */}
+        {/*           onChange={(e) => */}
+        {/*             setAdminRole( */}
+        {/*               e.target.value as "super_admin" | "admin" | "user", */}
+        {/*             ) */}
+        {/*           } */}
+        {/*           className="p-3 bg-blue-50 rounded-md border-none focus:outline-none focus:ring-2 focus:ring-green-500 transition" */}
+        {/*         > */}
+        {/*           <option value="super_admin">Super Admin</option> */}
+        {/*           <option value="admin">Admin</option> */}
+        {/*           <option value="user">User</option> */}
+        {/*         </select> */}
+        {/*       </div> */}
+        {/*       <button */}
+        {/*         type="submit" */}
+        {/*         className="w-full bg-green-600 text-white py-3 rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition" */}
+        {/*       > */}
+        {/*         Create User */}
+        {/*       </button> */}
+        {/*     </form> */}
+        {/*   </div> */}
+        {/* )} */}
       </div>
     </div>
   );
