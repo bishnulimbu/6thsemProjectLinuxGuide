@@ -29,8 +29,8 @@ interface AuthContextType {
   ) => Promise<void>;
   adminSignupUser: (
     username: string,
-    email: string,
     password: string,
+    email: string,
   ) => Promise<void>;
   logout: () => void;
 }
