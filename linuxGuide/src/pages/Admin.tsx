@@ -12,7 +12,6 @@ import {
   adminSignup,
   getUsers,
   getUserById,
-  updateUser,
 } from "../services/api";
 import { Guide, Post, User } from "../interfaces/interface";
 import { FaEdit, FaTrash, FaEye, FaPlus, FaMinus } from "react-icons/fa";
