@@ -64,8 +64,8 @@ export const login = async (
 // Rename createAdminUser to adminSignup for consistency
 export const adminSignup = async (data: {
   username: string;
-  email: string;
   password: string;
+  email: string;
 }): Promise<{
   message: string;
   user: { id: number; username: string; email: string };
@@ -83,7 +83,7 @@ export const adminSignup = async (data: {
 export const signup = async (
   username: string,
   password: string,
-  email: string,
+  email?: string,
 ): Promise<{ message: string; useId: number; role: string }> => {
   try {
     const response = await api.post("/auth/signup", {
