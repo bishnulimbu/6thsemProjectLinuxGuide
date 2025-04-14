@@ -11,6 +11,7 @@ const postRoutes = require("./routes/posts");
 const guideRoutes = require("./routes/guides");
 const commentRoutes = require("./routes/comments");
 const contactRoutes = require("./routes/contact");
+const searchRoutes = require("./routes/search");
 require("dotenv").config();
 
 const logDir = path.join(__dirname, "logs");
@@ -25,33 +26,19 @@ const wss = new Server({ server });
 
 // Middleware
 app.use(express.json());
-app.use(cors({ origin: "*" }));
-
-// Request logging middleware
-app.use((req, res, next) => {
-  console.log(
-    `Received ${req.method} request to ${req.url} from ${req.headers.origin}`,
-  );
-  res.on("finish", () => {
-    console.log(
-      `Response for ${req.url} - Status: ${res.statusCode}, Headers:`,
-      res.getHeaders(),
-    );
-  });
-  next();
-});
+app.use(cors());
 
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
 app.use("/guides", guideRoutes);
 app.use("/comments", commentRoutes);
 app.use("/contact", contactRoutes);
+app.use("/search", searchRoutes);
 
 wss.on("connection", async (ws) => {
   console.log("New WebSocket connection");
 
   let container;
-  let timeout; // Declare timeout outside
   try {
     const images = await docker.listImages({
       filters: { reference: ["linux-sandbox"] },
@@ -85,7 +72,7 @@ wss.on("connection", async (ws) => {
       stdout: true,
       stderr: true,
     });
-
+    let timeout;
     const resetTimeout = () => {
       if (timeout) clearTimeout(timeout);
       timeout = setTimeout(
@@ -135,14 +122,6 @@ wss.on("connection", async (ws) => {
 
 (async () => {
   try {
-    await docker.ping();
-    console.log("Docker is running");
-  } catch (err) {
-    console.error("Docker is not running or accessible:", err.message);
-    process.exit(1);
-  }
-
-  try {
     console.log("Attempting to connect to database...");
     await sequelize.authenticate();
     console.log("Database connected");
@@ -150,7 +129,6 @@ wss.on("connection", async (ws) => {
     console.log("Models synced");
   } catch (error) {
     console.error("Database connection error:", error);
-    process.exit(1);
   }
 })();
 
