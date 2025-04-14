@@ -51,12 +51,22 @@ const Navbar: React.FC = () => {
     <nav className="bg-white shadow-md p-4">
       <div className="flex justify-between items-center max-w-full mx-auto">
         {/* Title/Logo Section */}
-        <Link to="/" className="flex items-center space-x-2 group">
-          <FaLinux className="text-3xl text-blue-600 group-hover:text-blue-800 transition" />
-          <h1 className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent group-hover:from-blue-700 group-hover:to-blue-900 transition">
-            Linux Guide
-          </h1>
-        </Link>
+        <div className="flex items-center space-x-4">
+          <Link to="/" className="flex items-center space-x-2 group">
+            <FaLinux className="text-3xl text-blue-600 group-hover:text-blue-800 transition" />
+            <h1 className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent group-hover:from-blue-700 group-hover:to-blue-900 transition">
+              Linux Guide
+            </h1>
+          </Link>
+
+          {/* Search Link - Positioned next to the logo */}
+          <Link
+            to="/search"
+            className="text-gray-600 hover:text-blue-600 transition font-medium"
+          >
+            Search
+          </Link>
+        </div>
 
         {/* Hamburger Menu for Mobile */}
         <div className="md:hidden">
