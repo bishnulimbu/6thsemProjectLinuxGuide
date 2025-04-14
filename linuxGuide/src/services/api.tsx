@@ -17,7 +17,7 @@ class ApiError extends Error {
 }
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
+  baseURL: "http://localhost:8000",
   headers: {
     "Content-Type": "application/json",
   },
@@ -381,6 +381,21 @@ export const updateUser = async (
     await api.put(`/auth/users/${id}`, userData);
   } catch (err: any) {
     throw new ApiError(err.message || "Failed to update user", err.status);
+  }
+};
+export const searchContent = async (
+  search: string,
+): Promise<(Guide | Post)[]> => {
+  try {
+    console.log("Searching content with term:", search);
+    const response = await api.get("/search", {
+      params: { search },
+    });
+    console.log("Search response:", response.data);
+    return response.data;
+  } catch (err: any) {
+    console.error("Error searching content:", err);
+    throw new ApiError(err.message || "Failed to search content.", err.status);
   }
 };
 
