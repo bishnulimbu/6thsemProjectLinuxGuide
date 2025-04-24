@@ -1,4 +1,4 @@
-Below is a concise and professional `README.md` file for your LinuxGuide project, tailored for a GitHub repository. It includes an overview of the project, setup instructions, features (including the search functionality), and other relevant details. Since your project is a web app with a React (TypeScript + Tailwind) frontend and a Node.js (Express + Sequelize) backend, and you’ve recently added a search feature for guides and posts (with tag searching for posts only), I’ll reflect that in the README.
+Below is a concise and professional `README.md` file for the LinuxGuide project, tailored for a GitHub repository. It includes an overview of the project, setup instructions, features (including the search functionality), and other relevant details. Since the project is a web app with a React (TypeScript + Tailwind) frontend and a Node.js (Express + Sequelize) backend.
 
 ---
 
@@ -150,14 +150,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Contact
 
-For questions or feedback, please open an issue on GitHub or contact the maintainers at [your-email@example.com].
+For questions or feedback, please open an issue on GitHub or contact the maintainers at [subashlimbu987654321@gmail.com].
 
 ---
 
-### Notes
-- Replace `your-username` in the clone URL with your actual GitHub username.
-- Adjust paths (e.g., `backend/`, `frontend/`) if your project structure is different.
-- Add a `LICENSE` file to your repository if you choose the MIT License (or another license).
-- If you have specific deployment instructions (e.g., for the mobile app with Capacitor), you can add a separate section.
 
-Let me know if you need further modifications!
