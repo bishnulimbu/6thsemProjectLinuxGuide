@@ -2,9 +2,9 @@ import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "com.example.linuxguidemobile",
-  appName: "linuxguidemobile",
+  appName: "MobileLinuxGuide",
   webDir: "dist",
-  bundledWebRuntime: false,
+  android: {},
 };
 
 export default config;
