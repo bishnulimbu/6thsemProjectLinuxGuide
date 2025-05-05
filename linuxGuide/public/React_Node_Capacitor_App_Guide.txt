@@ -1,0 +1,91 @@
+📱 Convert React + Node Project to Mobile App with Capacitor
+
+✅ Requirements
+
+- Frontend: React (TypeScript + Tailwind)
+- Backend: Node.js + Express + Sequelize
+- Phone & PC connected to the **same Wi-Fi**
+- Backend running on LAN IP (e.g. `192.168.x.x`)
+- Android Studio installed
+
+🧱 Step-by-Step Guide
+
+🔹 1. In your React project folder
+
+Install Capacitor:
+npm install @capacitor/core @capacitor/cli
+npx cap init
+
+- App name: Your app's name (e.g., LinuxGuide)
+- App ID: com.yourdomain.app (e.g., com.linux.guide)
+
+🔹 2. Update API URL in your frontend
+
+Wherever your API base URL is set (api.ts, .env.production, or direct), change:
+const BASE_URL = "http://192.168.254.5:8000";
+
+✅ This is needed so the Android app can fetch from your backend.
+
+🔹 3. Set correct base in vite.config.ts
+
+If you're using Vite:
+export default defineConfig({
+  base: './',
+});
+
+🔹 4. Build your frontend
+
+npm run build
+
+🔹 5. Add Android platform with Capacitor
+
+npx cap add android
+
+🔹 6. Enable HTTP API access
+
+In android/app/src/main/AndroidManifest.xml, inside the <application> tag, add:
+android:usesCleartextTraffic="true"
+
+🔹 7. Copy your build to Android project
+
+npx cap copy android
+
+🔹 8. Open Android project
+
+npx cap open android
+
+🔹 9. Run in Android Studio
+
+- Let it sync Gradle and index files
+- Connect your phone (USB + USB debugging ON)
+- Select your phone from the device list
+- Click the green ▶️ “Run” button
+- App will open on your phone
+
+⚙️ Backend Checklist
+
+In your Node.js server, make sure:
+
+1. You listen on all IPs:
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
+
+2. CORS is enabled:
+app.use(cors({
+  origin: '*',
+}));
+
+3. Your backend runs on LAN-accessible IP (e.g. http://192.168.254.5:8000)
+
+✅ Final Testing
+
+- The web version of your frontend works ✅
+- App is installed on your phone ✅
+- Backend data fetches correctly in the app ✅
+
+Let me know if you want help with:
+- Splash screen & app icon setup
+- Play Store upload prep
+- iOS support
+- PWA version
