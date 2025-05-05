@@ -1,3 +1,4 @@
+adb reverse tcp:8000 tcp:8000 //port forwarding for the mobile app access to backend url
 Below is a concise and professional `README.md` file for the LinuxGuide project, tailored for a GitHub repository. It includes an overview of the project, setup instructions, features (including the search functionality), and other relevant details. Since the project is a web app with a React (TypeScript + Tailwind) frontend and a Node.js (Express + Sequelize) backend.
 
 ---
@@ -35,26 +36,35 @@ A web application for creating, managing, and searching Linux guides and posts, 
 ## Setup Instructions
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/your-username/LinuxGuide.git
 cd LinuxGuide
 ```
 
 ### 2. Backend Setup
+
 1. Navigate to the backend directory (if separate, or root if combined):
+
    ```bash
    cd backend
    ```
+
 2. Install dependencies:
+
    ```bash
    npm install
    ```
+
 3. Configure the database:
    - Copy `.env.example` to `.env`:
+
      ```bash
      cp .env.example .env
      ```
+
    - Update `.env` with your database credentials:
+
      ```
      DB_HOST=localhost
      DB_USER=your_username
@@ -63,48 +73,67 @@ cd LinuxGuide
      DB_DIALECT=postgres
      PORT=8000
      ```
+
 4. Set up the database:
    - Ensure your database server is running.
    - Run migrations (if applicable):
+
      ```bash
      npx sequelize-cli db:migrate
      ```
+
 5. Start the backend server:
+
    ```bash
    npm run dev
    ```
+
    The backend will run on `http://localhost:8000`.
 
 ### 3. Frontend Setup
+
 1. Navigate to the frontend directory (if separate, or root if combined):
+
    ```bash
    cd frontend
    ```
+
 2. opisInstall dependencies:
+
    ```bash
    npm install
    ```
+
 3. Configure the API URL:
    - Copy `.env.example` to `.env`:
+
      ```bash
      cp .env.example .env
      ```
+
    - Update `.env` with your backend URL:
+
      ```
      VITE_API_URL=http://192.168.254.5:8000
      ```
+
 4. Start the frontend development server:
+
    ```bash
    npm run dev
    ```
+
    The frontend will run on `http://localhost:5173` (or another port if specified).
 
 ### 4. Docker Setup (for Terminal Sandbox)
+
 1. Ensure Docker is installed and running.
 2. Build the `linux-sandbox` image (or pull it if available):
+
    ```bash
    docker build -t linux-sandbox ./docker
    ```
+
    (Adjust the path to your Dockerfile for the sandbox image.)
 3. The WebSocket terminal will automatically use this image when accessed.
 
@@ -153,5 +182,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 For questions or feedback, please open an issue on GitHub or contact the maintainers at [subashlimbu987654321@gmail.com].
 
 ---
-
-
