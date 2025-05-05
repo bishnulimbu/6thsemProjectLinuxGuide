@@ -4,6 +4,12 @@ import { searchContent } from "../services/api";
 import { Guide, Post } from "../interfaces/interface";
 import { Link } from "react-router-dom";
 
+// Utility function to truncate text
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + "...";
+};
+
 const Search: React.FC = () => {
   const [results, setResults] = useState<(Guide | Post)[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -36,24 +42,12 @@ const Search: React.FC = () => {
     return () => debouncedSearch.cancel();
   }, [searchTerm, debouncedSearch]);
 
-  // Function to truncate text to a certain length
-  const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
-  };
-
-  // Function to get type style
-  const getTypeStyle = (type: string) => {
-    return type === "guide"
-      ? "bg-green-100 text-green-800"
-      : "bg-blue-100 text-blue-800";
-  };
-
   return (
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Search Guides & Posts</h1>
       <input
         type="text"
-        placeholder="Search guides (title, description) or posts (title, description, tags)..."
+        placeholder="Search guides (title, description) or posts (title, content, tags)..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="w-full p-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -70,15 +64,14 @@ const Search: React.FC = () => {
               <div>
                 <h3 className="text-lg font-semibold">{item.title}</h3>
                 <p className="text-gray-600">
-                  {truncateText(item.description || item.content, 100)}
+                  {truncateText(
+                    item.type === "guide" ? item.description : item.content,
+                    100,
+                  )}
                 </p>
-                <div
-                  className={`text-sm font-semibold px-3 py-1 inline-block rounded-md ${getTypeStyle(
-                    item.type,
-                  )}`}
-                >
-                  {item.type === "guide" ? "Guide" : "Post"}
-                </div>
+                <p className="text-sm text-gray-500">
+                  Type: {item.type === "guide" ? "Guide" : "Post"}
+                </p>
                 {item.tags && item.tags.length > 0 && (
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">Tags:</p>
