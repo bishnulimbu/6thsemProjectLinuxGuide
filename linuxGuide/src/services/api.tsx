@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import { Capacitor } from "@capacitor/core";
 import {
   AuthResponse,
   User,
@@ -15,14 +16,46 @@ class ApiError extends Error {
     this.status = status;
   }
 }
+const getBaseUrl = async () => {
+  // Added async here
+  if (Capacitor.isNativePlatform()) {
+    // Try these in order - one should work
+    const testUrls = [
+      "http://10.0.2.2:8000", // Android emulator special IP
+      "http://192.168.254.7:8000", // Your local IP
+      "http://localhost:8000", // Fallback
+    ];
+
+    // Test each URL sequentially
+    for (const url of testUrls) {
+      try {
+        const response = await fetch(url, { method: "HEAD" });
+        if (response.ok) return url;
+      } catch (e) {
+        console.debug(`Connection test failed for ${url}`, e);
+      }
+    }
+    return "http://10.0.2.2:8000"; // Default fallback
+  }
+  return "http://localhost:8000";
+};
 
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: "http://localhost:8000", // Default, will be overridden
   headers: {
     "Content-Type": "application/json",
   },
   timeout: 10000,
 });
+(async () => {
+  try {
+    const baseUrl = await getBaseUrl();
+    api.defaults.baseURL = baseUrl;
+    console.log("Using backend URL:", baseUrl);
+  } catch (e) {
+    console.error("Could not determine backend URL:", e);
+  }
+})();
 
 api.interceptors.request.use(
   (config) => {
