@@ -26,7 +26,7 @@ const wss = new Server({ server });
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "*" })); // Allow
 
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
