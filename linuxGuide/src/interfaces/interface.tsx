@@ -49,3 +49,23 @@ export interface Comment {
   updatedAt: string;
   User?: { username: string };
 }
+// Base interface for common properties
+export interface SearchResult {
+  id: number;
+  title: string;
+  userId: number;
+  type: "guide" | "post"; // Added type field (union type for the dynamic value)
+  tags: Tag[]; // Tags are always present, but empty for guides
+}
+
+export interface Guide extends SearchResult {
+  type: "guide"; // Literal type for Guide
+  description: string;
+  tags: []; // Guides have an empty tags array
+}
+
+export interface Post extends SearchResult {
+  type: "post"; // Literal type for Post
+  content: string;
+  tags: Tag[]; // Posts can have tags
+}
