@@ -83,7 +83,7 @@ const GuideDetail: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <div className="text-sm text-gray-500 space-y-1">
           <p>Created: {new Date(guide.createdAt).toLocaleDateString()}</p>
-          <p>Author: {author || `User ${guide.userId}`}</p>
+          <p>Author: {guide.User.username}</p>
         </div>
         <span
           className={`text-sm px-2 py-1 rounded-full ${
