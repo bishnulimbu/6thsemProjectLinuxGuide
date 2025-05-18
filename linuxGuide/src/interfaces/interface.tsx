@@ -21,7 +21,7 @@ export interface Guide {
   userId: number;
   createdAt: string;
   updatedAt: string;
-  User: { username: string };
+  User: any;
 }
 export interface Tag {
   id?: number;
@@ -35,7 +35,7 @@ export interface Post {
   userId: number;
   createdAt: string;
   updatedAt: string;
-  User?: { username: string };
+  User: any;
   Tags?: Tag[]; // Add Tags field
 }
 
