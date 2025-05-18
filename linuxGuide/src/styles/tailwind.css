@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 /* Reset default margins and ensure full height */
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-}
+/* body { */
+/*   margin: 0; */
+/*   padding: 0; */
+/*   min-height: 100vh; */
+/* } */
 
 /* Custom diagonal pattern background */
 .diagonal-pattern {
