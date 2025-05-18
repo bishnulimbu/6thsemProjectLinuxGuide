@@ -63,9 +63,11 @@ const UserTerminal: React.FC = () => {
     };
 
     // Handle terminal input
+    // Updated history navigation logic:
     term.onKey(({ key, domEvent }) => {
       const charCode = domEvent.keyCode;
       if (charCode === 13) {
+        // Enter
         term.write("\r\n");
         const command = commandRef.current.trim();
         if (command) {
@@ -75,33 +77,26 @@ const UserTerminal: React.FC = () => {
         }
         commandRef.current = "";
       } else if (charCode === 8) {
+        // Backspace
         if (commandRef.current.length > 0) {
           commandRef.current = commandRef.current.slice(0, -1);
           term.write("\b \b");
         }
       } else if (charCode === 38) {
-        if (
-          commandHistory.length > 0 &&
-          historyIndex < commandHistory.length - 1
-        ) {
+        // Up arrow
+        if (historyIndex < commandHistory.length - 1) {
           const newIndex = historyIndex + 1;
           setHistoryIndex(newIndex);
-          const prevCommand = commandHistory[newIndex];
-          while (commandRef.current.length > 0) {
-            commandRef.current = commandRef.current.slice(0, -1);
-            term.write("\b \b");
-          }
-          commandRef.current = prevCommand;
-          term.write(prevCommand);
+          term.write("\x1b[2K\r$ "); // Clear line and rewrite prompt
+          commandRef.current = commandHistory[newIndex];
+          term.write(commandRef.current);
         }
       } else if (charCode === 40) {
+        // Down arrow
         if (historyIndex >= 0) {
           const newIndex = historyIndex - 1;
           setHistoryIndex(newIndex);
-          while (commandRef.current.length > 0) {
-            commandRef.current = commandRef.current.slice(0, -1);
-            term.write("\b \b");
-          }
+          term.write("\x1b[2K\r$ "); // Clear line and rewrite prompt
           if (newIndex >= 0) {
             commandRef.current = commandHistory[newIndex];
             term.write(commandRef.current);
@@ -109,7 +104,8 @@ const UserTerminal: React.FC = () => {
             commandRef.current = "";
           }
         }
-      } else if (domEvent.key.length === 1) {
+      } else if (key.length === 1) {
+        // Regular character
         commandRef.current += key;
         term.write(key);
       }
