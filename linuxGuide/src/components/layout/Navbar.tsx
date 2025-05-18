@@ -60,12 +60,29 @@ const Navbar: React.FC = () => {
           </Link>
 
           {/* Search Link - Positioned next to the logo */}
-          <Link
-            to="/search"
-            className="text-gray-600 hover:text-blue-600 transition font-medium"
-          >
-            Search
-          </Link>
+
+          <div className="flex items-center space-x-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 group-hover:scale-110 transition-transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <Link
+              to="/search"
+              className="text-gray-600 hover:text-blue-600 transition font-medium"
+            >
+              Search
+            </Link>
+          </div>
         </div>
 
         {/* Hamburger Menu for Mobile */}
