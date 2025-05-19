@@ -307,7 +307,7 @@ const Home: React.FC = () => {
                   </h3>
 
                   {/* Content */}
-                  <div className="mb-4">
+                  <div className="mb-4 line-clamp-3">
                     <p>{post.content.replace(/#+\s/g, "")}</p>
                   </div>
 
