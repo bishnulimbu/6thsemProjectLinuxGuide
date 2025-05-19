@@ -6,16 +6,10 @@ import { Guide } from "../interfaces/interface";
 import ReactMarkdown from "react-markdown"; // New import
 import CommentSection from "../components/ui/CommentSection";
 
-interface User {
-  id: number;
-  username: string;
-}
-
 const GuideDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [guide, setGuide] = useState<Guide | null>(null);
-  const [author, setAuthor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,12 +24,6 @@ const GuideDetail: React.FC = () => {
       try {
         const fetchData = await getGuideById(parseInt(id));
         setGuide(fetchData);
-
-        const mockUser: User = {
-          id: fetchData.userId,
-          username: `User${fetchData.userId}`,
-        };
-        setAuthor(mockUser.username);
       } catch (err: any) {
         setError(err.message || "Failed to fetch guide.");
         toast.error(err.message || "Failed to fetch guide by id", {
@@ -71,34 +59,98 @@ const GuideDetail: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+    <div className="max-w-4xl mx-auto mt-8 p-8 bg-white rounded-xl shadow-lg">
+      {/* Back Button */}
       <button
         onClick={() => navigate("/guides")}
-        className="mb-4 text-blue-600 hover:underline"
+        className="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors mb-6"
         aria-label="Back to Guides"
       >
-        ← Back to Guides
-      </button>
-      <h1 className="text-3xl font-bold text-gray-800 mb-4">{guide.title}</h1>
-      <div className="flex justify-between items-center mb-6">
-        <div className="text-sm text-gray-500 space-y-1">
-          <p>Created: {new Date(guide.createdAt).toLocaleDateString()}</p>
-          <p>Author: {guide.User.username}</p>
-        </div>
-        <span
-          className={`text-sm px-2 py-1 rounded-full ${
-            guide.status === "published"
-              ? "bg-green-100 text-green-800"
-              : "bg-yellow-100 text-yellow-800"
-          }`}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
         >
-          {guide.status.charAt(0).toUpperCase() + guide.status.slice(1)}
-        </span>
-      </div>
-      <div className="prose max-w-none">
+          <path
+            fillRule="evenodd"
+            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
+        Back to Guides
+      </button>
+
+      {/* Guide Header */}
+      <header className="mb-8">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">{guide.title}</h1>
+
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-gray-600">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              <span>{guide.User.username}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <span>
+                {new Date(guide.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
+          </div>
+
+          <span
+            className={`text-sm font-medium px-3 py-1 rounded-full ${
+              guide.status === "published"
+                ? "bg-green-50 text-green-700 border border-green-200"
+                : "bg-yellow-50 text-yellow-700 border border-yellow-200"
+            }`}
+          >
+            {guide.status.charAt(0).toUpperCase() + guide.status.slice(1)}
+          </span>
+        </div>
+      </header>
+
+      {/* Guide Content */}
+      <div className="prose max-w-none prose-lg mb-10">
         <ReactMarkdown>{guide.description}</ReactMarkdown>
       </div>
-      <CommentSection guideId={guide.id} />
+
+      {/* Comments Section */}
+      <div className="border-t border-gray-200 pt-8">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Comments</h2>
+        <CommentSection guideId={guide.id} />
+      </div>
     </div>
   );
 };
