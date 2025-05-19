@@ -3,123 +3,131 @@ import UserTerminal from "../components/ui/UserTerminal";
 
 const TryLinux: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-100 py-6 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          Try Linux Commands
-        </h1>
-        <p className="text-gray-600 mb-4">
-          Use the terminal below to practice Linux commands in a safe sandboxed
-          environment. You can try commands like{" "}
-          <code aria-label="Linux command ls">ls</code>,{" "}
-          <code aria-label="Linux command pwd">pwd</code>,{" "}
-          <code aria-label="Linux command echo">echo</code>,{" "}
-          <code aria-label="Linux command nano">nano</code>,{" "}
-          <code aria-label="Linux command vim">vim</code>,{" "}
-          <code aria-label="Linux command grep">grep</code>, and{" "}
-          <code aria-label="Linux command python3">python3</code>. Package
-          installation commands (e.g.,{" "}
-          <code aria-label="Linux command apt install">apt install</code>) are
-          simulated for learning purposes.
-        </p>
+        {/* Header Section */}
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Try Linux Commands
+          </h1>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            Practice Linux commands in a safe sandboxed environment
+          </p>
+        </div>
 
-        <UserTerminal />
-        {/* Add the new Info section here */}
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
-            Info: What You Can Do in the Terminal
+        {/* Introduction */}
+        <div className="bg-white p-6 rounded-xl shadow-sm mb-4">
+          <p className="text-gray-700 mb-4 leading-relaxed">
+            Use the terminal below to practice Linux commands in a safe
+            sandboxed environment. You can try commands like{" "}
+            <span className="inline-code">ls</span>,{" "}
+            <span className="inline-code">pwd</span>,{" "}
+            <span className="inline-code">echo</span>,{" "}
+            <span className="inline-code">nano</span>,{" "}
+            <span className="inline-code">vim</span>,{" "}
+            <span className="inline-code">grep</span>, and{" "}
+            <span className="inline-code">python3</span>. Package installation
+            commands (e.g., <span className="inline-code">apt install</span>)
+            are simulated for learning purposes.
+          </p>
+        </div>
+
+        {/* Terminal Component */}
+        <div className="mb-10">
+          <UserTerminal />
+        </div>
+
+        {/* Info Section */}
+        <div className="bg-white p-6 rounded-xl shadow-sm">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">
+            Terminal Features and Limitations
           </h2>
-          <p className="text-gray-600 mb-2">
-            This terminal provides a safe sandboxed Linux environment where you
-            can practice various commands and activities:
-          </p>
-          <ul className="list-disc list-inside text-gray-600 mb-4">
-            <li>
-              <strong>Run Basic Linux Commands:</strong> Use commands like{" "}
-              <code aria-label="Linux command ls">ls</code>,{" "}
-              <code aria-label="Linux command pwd">pwd</code>,{" "}
-              <code aria-label="Linux command echo">echo</code>,{" "}
-              <code aria-label="Linux command cat">cat</code>,{" "}
-              <code aria-label="Linux command mkdir">mkdir</code>,{" "}
-              <code aria-label="Linux command rm">rm</code>,{" "}
-              <code aria-label="Linux command cp">cp</code>,{" "}
-              <code aria-label="Linux command mv">mv</code>,{" "}
-              <code aria-label="Linux command grep">grep</code>, and more to
-              manage files, directories, and process text.
-            </li>
-            <li>
-              <strong>Edit Files:</strong> Use text editors like{" "}
-              <code aria-label="Linux command nano">nano</code> or{" "}
-              <code aria-label="Linux command vim">vim</code> to create and edit
-              files (if installed).
-            </li>
-            <li>
-              <strong>Run Python Scripts:</strong> If{" "}
-              <code aria-label="Linux command python3">python3</code> is
-              installed, you can run Python commands or scripts (e.g.,{" "}
-              <code aria-label="Linux command python3">python3 script.py</code>
-              ).
-            </li>
-            <li>
-              <strong>Simulate Package Installation:</strong> Try commands like{" "}
-              <code aria-label="Linux command apt install">
-                apt install curl
-              </code>{" "}
-              to simulate package installation for learning purposes (actual
-              installation is disabled).
-            </li>
-            <li>
-              <strong>Use Command History:</strong> Press the Up and Down arrow
-              keys to navigate through your command history.
-            </li>
-            <li>
-              <strong>Interact with a Sandboxed Environment:</strong> Experiment
-              in a safe environment with resource limits (128MB RAM, limited CPU
-              usage). Your session runs in a Docker container that auto-deletes
-              when you’re done.
-            </li>
-            <li>
-              <strong>Experience Session Timeout:</strong> If you’re inactive
-              for 5 minutes, the session will close with a message: "Session
-              timed out due to inactivity."
-            </li>
-          </ul>
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            Limitations
-          </h3>
-          <p className="text-gray-600 mb-2">
-            To ensure safety and performance, there are some restrictions:
-          </p>
-          <ul className="list-disc list-inside text-gray-600 mb-4">
-            <li>
-              <strong>No Real Package Installation:</strong> Commands like{" "}
-              <code aria-label="Linux command apt install">apt install</code>{" "}
-              are simulated and don’t install real packages.
-            </li>
-            <li>
-              <strong>No Host System Access:</strong> You cannot access the host
-              system’s files, processes, or network.
-            </li>
-            <li>
-              <strong>Resource Limits:</strong> Commands requiring more than
-              128MB of RAM or significant CPU resources may fail or be
-              throttled.
-            </li>
-            <li>
-              <strong>No Data Persistence:</strong> Files and changes are lost
-              when the session ends (e.g., after a timeout or when you close the
-              terminal).
-            </li>
-            <li>
-              <strong>Limited Internet Access:</strong> Commands requiring
-              internet access (e.g.,{" "}
-              <code aria-label="Linux command curl">curl</code>,{" "}
-              <code aria-label="Linux command wget">wget</code>) may not work
-              unless configured.
-            </li>
-          </ul>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Features Column */}
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                What You Can Do
+              </h3>
+              <ul className="space-y-3">
+                {[
+                  "Run Basic Linux Commands: Use commands like ls, pwd, echo, cat, mkdir, rm, cp, mv, grep to manage files and text",
+                  "Edit Files: Use text editors like nano or vim to create and edit files",
+                  "Run Python Scripts: Execute Python commands or scripts if python3 is available",
+                  "Simulate Package Installation: Try apt install commands (simulated only)",
+                  "Use Command History: Navigate history with Up/Down arrow keys",
+                  "Sandboxed Environment: Experiment safely with resource limits (128MB RAM)",
+                  "Session Timeout: Inactive sessions auto-close after 5 minutes",
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start">
+                    <svg
+                      className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    <span className="text-gray-700">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Limitations Column */}
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                Limitations
+              </h3>
+              <ul className="space-y-3">
+                {[
+                  "No Real Package Installation: apt install commands are simulated",
+                  "No Host System Access: Cannot access host files or processes",
+                  "Resource Limits: 128MB RAM limit, CPU throttling",
+                  "No Data Persistence: Changes lost after session ends",
+                  "Limited Internet Access: Network commands may not work",
+                ].map((item, index) => (
+                  <li key={index} className="flex items-start">
+                    <svg
+                      className="h-5 w-5 text-red-500 mr-2 mt-0.5 flex-shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                    <span className="text-gray-700">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Global Styles */}
+      <style>{`
+        .inline-code {
+          font-family: "Fira Code", monospace;
+          background-color: #f3f4f6;
+          padding: 0.2em 0.4em;
+          border-radius: 0.25rem;
+          font-size: 0.9em;
+          color: #3b82f6;
+        }
+      `}</style>
     </div>
   );
 };
