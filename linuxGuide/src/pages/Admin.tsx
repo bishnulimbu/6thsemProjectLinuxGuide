@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Fixed import
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
+import { FaTimes } from "react-icons/fa";
 import {
   getGuides,
   getPosts,
@@ -293,113 +294,97 @@ const Admin: React.FC = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="max-w-6xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Admin Dashboard</h1>
+    <div className="max-w-7xl mx-auto mt-8 p-6 bg-white rounded-xl shadow-lg">
+      {/* Dashboard Header */}
+      <div className="border-b border-gray-200 pb-6 mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+        <p className="text-gray-600 mt-2">Manage users, guides, and posts</p>
+      </div>
 
       {/* Create Admin User Section (Super Admin Only) */}
       {user?.role === "super_admin" && (
-        <section aria-labelledby="create-admin-heading" className="mb-10">
+        <section className="mb-10 bg-gray-50 p-6 rounded-lg">
           <div className="flex justify-between items-center mb-4">
-            <h2
-              id="create-admin-heading"
-              className="text-2xl font-semibold text-gray-800"
-            >
+            <h2 className="text-2xl font-semibold text-gray-800">
               Create New Admin User
             </h2>
             <button
               onClick={() => setShowCreateAdminForm(!showCreateAdminForm)}
-              className="flex items-center text-blue-600 hover:text-blue-800 transition"
+              className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
               aria-expanded={showCreateAdminForm}
-              aria-controls="create-admin-form"
             >
               {showCreateAdminForm ? (
                 <>
-                  <FaMinus className="mr-2" /> Hide Form
+                  <FaMinus /> Hide Form
                 </>
               ) : (
                 <>
-                  <FaPlus className="mr-2" /> Show Form
+                  <FaPlus /> Show Form
                 </>
               )}
             </button>
           </div>
+
           {showCreateAdminForm && (
-            <div id="create-admin-form" className="p-4 bg-gray-50 rounded-md">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               {adminFormError && (
-                <p className="text-red-600 mb-4" role="alert">
+                <div className="bg-red-50 text-red-600 p-3 rounded-md mb-4">
                   {adminFormError}
-                </p>
+                </div>
               )}
               <form onSubmit={handleCreateAdmin} className="space-y-4">
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="admin-username"
-                    className="text-sm font-semibold text-gray-600 uppercase mb-2"
-                  >
-                    Username
-                  </label>
-                  <input
-                    id="admin-username"
-                    type="text"
-                    value={adminForm.username}
-                    onChange={(e) =>
-                      setAdminForm({ ...adminForm, username: e.target.value })
-                    }
-                    required
-                    placeholder="Enter username"
-                    className="p-3 bg-blue-50 rounded-md border-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    aria-required="true"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="admin-email"
-                    className="text-sm font-semibold text-gray-600 uppercase mb-2"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="admin-email"
-                    type="email"
-                    value={adminForm.email}
-                    onChange={(e) =>
-                      setAdminForm({ ...adminForm, email: e.target.value })
-                    }
-                    required
-                    placeholder="Enter email"
-                    className="p-3 bg-blue-50 rounded-md border-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    aria-required="true"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <label
-                    htmlFor="admin-password"
-                    className="text-sm font-semibold text-gray-600 uppercase mb-2"
-                  >
-                    Password
-                  </label>
-                  <input
-                    id="admin-password"
-                    type="password"
-                    value={adminForm.password}
-                    onChange={(e) =>
-                      setAdminForm({ ...adminForm, password: e.target.value })
-                    }
-                    required
-                    placeholder="Enter password"
-                    className="p-3 bg-blue-50 rounded-md border-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                    aria-required="true"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Username
+                    </label>
+                    <input
+                      type="text"
+                      value={adminForm.username}
+                      onChange={(e) =>
+                        setAdminForm({ ...adminForm, username: e.target.value })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={adminForm.email}
+                      onChange={(e) =>
+                        setAdminForm({ ...adminForm, email: e.target.value })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      value={adminForm.password}
+                      onChange={(e) =>
+                        setAdminForm({ ...adminForm, password: e.target.value })
+                      }
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      required
+                    />
+                  </div>
                 </div>
                 <button
                   type="submit"
                   disabled={adminFormLoading}
-                  className={`w-full py-3 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ${
+                  className={`mt-4 w-full py-2.5 rounded-md text-white font-medium ${
                     adminFormLoading
                       ? "bg-blue-400 cursor-not-allowed"
-                      : "bg-blue-800 hover:bg-blue-900"
+                      : "bg-blue-600 hover:bg-blue-700"
                   }`}
-                  aria-label="Create new admin user"
                 >
                   {adminFormLoading ? "Creating..." : "Create Admin User"}
                 </button>
@@ -408,45 +393,74 @@ const Admin: React.FC = () => {
           )}
         </section>
       )}
-      {/* User Section */}
+
+      {/* User Management Section */}
       {isSuperAdmin && (
-        <section aria-labelledby="users-heading" className="mb-10">
-          <div className="flex justify-between items-center mb-4">
-            <h2
-              id="users-heading"
-              className="text-2xl font-semibold text-gray-800"
-            >
+        <section className="mb-10">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800">
               Manage Users
             </h2>
+            <div className="flex gap-3">
+              <button className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                Export
+              </button>
+            </div>
           </div>
+
           {loading ? (
-            <p className="text-center text-gray-500">Loading...</p>
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
           ) : error ? (
-            <p className="text-center text-red-600">{error}</p>
+            <div className="bg-red-50 text-red-600 p-4 rounded-md">{error}</div>
           ) : users.length === 0 ? (
-            <p className="text-center text-gray-500">No Users available.</p>
+            <div className="bg-gray-50 p-8 text-center rounded-lg">
+              <p className="text-gray-600">No users found</p>
+            </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-gray-50 rounded-lg">
-                <thead>
-                  <tr className="bg-gray-200 text-gray-700">
-                    <th className="py-3 px-4 text-left">Username</th>
-                    <th className="py-3 px-4 text-left">Email</th>
-                    <th className="py-3 px-4 text-left">Role</th>
-                    <th className="py-3 px-4 text-left">Created</th>
-                    <th className="py-3 px-4 text-left">Actions</th>
+            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
+              <table className="min-w-full divide-y divide-gray-300">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Username
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Created
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="bg-white divide-y divide-gray-200">
                   {users.map((user) => (
-                    <tr key={user.id} className="border-b hover:bg-gray-100">
-                      <td className="py-3 px-4">{user.username}</td>
-                      <td className="py-3 px-4">
-                        {user.email || "No User Email"}
+                    <tr key={user.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-medium">
+                            {user.username.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {user.username}
+                            </div>
+                          </div>
+                        </div>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {user.email || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`px-3 py-1 rounded-full text-sm ${
+                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                             user.role === "super_admin"
                               ? "bg-purple-100 text-purple-800"
                               : user.role === "admin"
@@ -454,44 +468,45 @@ const Admin: React.FC = () => {
                                 : "bg-gray-100 text-gray-800"
                           }`}
                         >
-                          {user.role.charAt(0).toUpperCase() +
-                            user.role.slice(1)}
+                          {user.role
+                            .replace("_", " ")
+                            .replace(/\b\w/g, (l) => l.toUpperCase())}
                         </span>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {user.createdAt
                           ? new Date(user.createdAt).toLocaleDateString()
                           : "No Date Available"}
                       </td>
-                      <td className="py-3 px-4 flex space-x-2">
-                        <button
-                          onClick={() => handleEditUser(user.id)} // Assuming handleEditUser is defined
-                          className="text-blue-600 hover:text-blue-800"
-                          aria-label={`Edit user ${user.username}`}
-                        >
-                          <FaEdit />{" "}
-                          {/* Assuming FaEdit is imported from react-icons */}
-                        </button>
-                        <button
-                          onClick={() => handleViewUser(user.id)} // Assuming handleViewUser is defined
-                          className="text-green-600 hover:text-green-800"
-                          aria-label={`View details of user ${user.username}`}
-                        >
-                          <FaEye />{" "}
-                          {/* Assuming FaEye is imported from react-icons */}
-                        </button>
-                        <button
-                          onClick={() => handleDeleteUser(user.id)}
-                          className={`text-red-600 hover:text-red-800 ${
-                            user.role === "super_admin"
-                              ? "opacity-50 cursor-not-allowed"
-                              : ""
-                          }`}
-                          disabled={user.role === "super_admin"}
-                          aria-label={`Delete user ${user.username}`}
-                        >
-                          <FaTrash />
-                        </button>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-3">
+                          <button
+                            onClick={() => handleViewUser(user.id)}
+                            className="text-blue-600 hover:text-blue-900"
+                            title="View"
+                          >
+                            <FaEye />
+                          </button>
+                          <button
+                            onClick={() => handleEditUser(user.id)}
+                            className="text-indigo-600 hover:text-indigo-900"
+                            title="Edit"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(user.id)}
+                            disabled={user.role === "super_admin"}
+                            className={`text-red-600 hover:text-red-900 ${
+                              user.role === "super_admin"
+                                ? "opacity-50 cursor-not-allowed"
+                                : ""
+                            }`}
+                            title="Delete"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -502,152 +517,103 @@ const Admin: React.FC = () => {
         </section>
       )}
 
-      {/* Modal for viewing user details */}
-      {isModalOpen && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label="Close modal"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              User Details
-            </h2>
-            <div className="space-y-3">
-              <p className="text-gray-700">
-                <span className="font-semibold">ID:</span> {selectedUser.id}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Username:</span>{" "}
-                {selectedUser.username}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Email:</span>{" "}
-                {selectedUser.email || "Not provided"}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Role:</span> {selectedUser.role}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Created At:</span>{" "}
-                {selectedUser.createdAt
-                  ? new Date(selectedUser.createdAt).toLocaleDateString()
-                  : "Not available"}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Updated At:</span>{" "}
-                {selectedUser.updatedAt
-                  ? new Date(selectedUser.updatedAt).toLocaleDateString()
-                  : "Not available"}
-              </p>
-            </div>
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Guide Section */}
-      <section aria-labelledby="guides-heading" className="mb-10">
-        <div className="flex justify-between items-center mb-4">
-          <h2
-            id="guides-heading"
-            className="text-2xl font-semibold text-gray-800"
-          >
+      {/* Guides Section */}
+      <section className="mb-10">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-semibold text-gray-800">
             Manage Guides
           </h2>
           <Link
             to="/create-guide"
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Create Guide
+            <FaPlus /> Create Guide
           </Link>
         </div>
+
         {loading ? (
-          <p className="text-center text-gray-500">Loading...</p>
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
         ) : error ? (
-          <p className="text-center text-red-600">{error}</p>
+          <div className="bg-red-50 text-red-600 p-4 rounded-md">{error}</div>
         ) : guides.length === 0 ? (
-          <p className="text-center text-gray-500">No guides available.</p>
+          <div className="bg-gray-50 p-8 text-center rounded-lg">
+            <p className="text-gray-600">No guides found</p>
+          </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-gray-50 rounded-lg">
-              <thead>
-                <tr className="bg-gray-200 text-gray-700">
-                  <th className="py-3 px-4 text-left">Title</th>
-                  <th className="py-3 px-4 text-left">Author</th>
-                  <th className="py-3 px-4 text-left">Status</th>
-                  <th className="py-3 px-4 text-left">Created</th>
-                  <th className="py-3 px-4 text-left">Actions</th>
+          <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
+            <table className="min-w-full divide-y divide-gray-300">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Title
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Author
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Created
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-white divide-y divide-gray-200">
                 {guides.map((guide) => (
-                  <tr key={guide.id} className="border-b hover:bg-gray-100">
-                    <td className="py-3 px-4">{guide.title}</td>
-                    <td className="py-3 px-4">
+                  <tr key={guide.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <div className="text-sm font-medium text-gray-900">
+                        {guide.title}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {guide.User?.username || "Unknown"}
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => handleToggleStatus(guide)}
-                        className={`px-3 py-1 rounded-full text-sm ${
+                        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           guide.status === "published"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        } hover:opacity-80 transition`}
+                            ? "bg-green-100 text-green-800 hover:bg-green-200"
+                            : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                        }`}
                       >
                         {guide.status.charAt(0).toUpperCase() +
                           guide.status.slice(1)}
                       </button>
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(guide.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="py-3 px-4 flex space-x-2">
-                      <Link
-                        to={`/guides/${guide.id}`}
-                        className="text-blue-600 hover:text-blue-800"
-                        aria-label={`View guide ${guide.title}`}
-                      >
-                        <FaEye />
-                      </Link>
-                      <Link
-                        to={`/edit-guide/${guide.id}`}
-                        className="text-blue-600 hover:text-blue-800"
-                        aria-label={`Edit guide ${guide.title}`}
-                      >
-                        <FaEdit />
-                      </Link>
-                      <button
-                        onClick={() => handleDeleteGuide(guide.id)}
-                        className="text-red-600 hover:text-red-800"
-                        aria-label={`Delete guide ${guide.title}`}
-                      >
-                        <FaTrash />
-                      </button>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-3">
+                        <Link
+                          to={`/guides/${guide.id}`}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="View"
+                        >
+                          <FaEye />
+                        </Link>
+                        <Link
+                          to={`/edit-guide/${guide.id}`}
+                          className="text-indigo-600 hover:text-indigo-900"
+                          title="Edit"
+                        >
+                          <FaEdit />
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteGuide(guide.id)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Delete"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -658,70 +624,84 @@ const Admin: React.FC = () => {
       </section>
 
       {/* Posts Section */}
-      <section aria-labelledby="posts-heading">
-        <div className="flex justify-between items-center mb-4">
-          <h2
-            id="posts-heading"
-            className="text-2xl font-semibold text-gray-800"
-          >
-            Manage Posts
-          </h2>
+      <section>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-semibold text-gray-800">Manage Posts</h2>
           <Link
             to="/create-post"
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Create Post
+            <FaPlus /> Create Post
           </Link>
         </div>
+
         {loading ? (
-          <p className="text-center text-gray-500">Loading...</p>
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
         ) : error ? (
-          <p className="text-center text-red-600">{error}</p>
+          <div className="bg-red-50 text-red-600 p-4 rounded-md">{error}</div>
         ) : posts.length === 0 ? (
-          <p className="text-center text-gray-500">No posts available.</p>
+          <div className="bg-gray-50 p-8 text-center rounded-lg">
+            <p className="text-gray-600">No posts found</p>
+          </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-gray-50 rounded-lg">
-              <thead>
-                <tr className="bg-gray-200 text-gray-700">
-                  <th className="py-3 px-4 text-left">Title</th>
-                  <th className="py-3 px-4 text-left">Author</th>
-                  <th className="py-3 px-4 text-left">Created</th>
-                  <th className="py-3 px-4 text-left">Actions</th>
+          <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
+            <table className="min-w-full divide-y divide-gray-300">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Title
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Author
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Created
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-white divide-y divide-gray-200">
                 {posts.map((post) => (
-                  <tr key={post.id} className="border-b hover:bg-gray-100">
-                    <td className="py-3 px-4">{post.title}</td>
-                    <td className="py-3 px-4">
+                  <tr key={post.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <div className="text-sm font-medium text-gray-900">
+                        {post.title}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {post.User?.username || "Unknown"}
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(post.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="py-3 px-4 flex space-x-2">
-                      <Link
-                        to={`/posts/${post.id}`}
-                        className="text-blue-600 hover:text-blue-800"
-                        aria-label={`View post ${post.title}`}
-                      >
-                        <FaEye />
-                      </Link>
-                      <Link
-                        to={`/edit-post/${post.id}`}
-                        className="text-blue-600 hover:text-blue-800"
-                        aria-label={`Edit post ${post.title}`}
-                      >
-                        <FaEdit />
-                      </Link>
-                      <button
-                        onClick={() => handleDeletePost(post.id)}
-                        className="text-red-600 hover:text-red-800"
-                        aria-label={`Delete post ${post.title}`}
-                      >
-                        <FaTrash />
-                      </button>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-3">
+                        <Link
+                          to={`/posts/${post.id}`}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="View"
+                        >
+                          <FaEye />
+                        </Link>
+                        <Link
+                          to={`/edit-post/${post.id}`}
+                          className="text-indigo-600 hover:text-indigo-900"
+                          title="Edit"
+                        >
+                          <FaEdit />
+                        </Link>
+                        <button
+                          onClick={() => handleDeletePost(post.id)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Delete"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -730,6 +710,98 @@ const Admin: React.FC = () => {
           </div>
         )}
       </section>
+
+      {/* User Details Modal */}
+      {isModalOpen && selectedUser && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div
+              className="fixed inset-0 transition-opacity"
+              aria-hidden="true"
+            >
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span
+              className="hidden sm:inline-block sm:align-middle sm:h-screen"
+              aria-hidden="true"
+            >
+              &#8203;
+            </span>
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="sm:flex sm:items-start">
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900">
+                        User Details
+                      </h3>
+                      <button
+                        onClick={() => setIsModalOpen(false)}
+                        className="text-gray-400 hover:text-gray-500"
+                      >
+                        <FaTimes />
+                      </button>
+                    </div>
+                    <div className="mt-4 space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-500">Username</p>
+                          <p className="mt-1 text-sm text-gray-900">
+                            {selectedUser.username}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Role</p>
+                          <p className="mt-1 text-sm text-gray-900 capitalize">
+                            {selectedUser.role.replace("_", " ")}
+                          </p>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Email</p>
+                        <p className="mt-1 text-sm text-gray-900">
+                          {selectedUser.email || "N/A"}
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-500">Created</p>
+                          <p className="mt-1 text-sm text-gray-900">
+                            {selectedUser.createdAt
+                              ? new Date(
+                                  selectedUser.createdAt,
+                                ).toLocaleString()
+                              : "Unknown"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Last Updated</p>
+                          <p className="mt-1 text-sm text-gray-900">
+                            {selectedUser.updatedAt
+                              ? new Date(
+                                  selectedUser.updatedAt,
+                                ).toLocaleString()
+                              : "Unknown"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
