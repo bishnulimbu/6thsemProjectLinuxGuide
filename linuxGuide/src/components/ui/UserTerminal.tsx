@@ -128,7 +128,9 @@ const UserTerminal: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full h-96">
+    <div className="w-full h-[500px] min-h-[400px]">
+      {" "}
+      {/* Increased from h-350 */}
       {!isConnected && (
         <div className="text-gray-500">Connecting to terminal...</div>
       )}
