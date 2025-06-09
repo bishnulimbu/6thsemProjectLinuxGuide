@@ -130,6 +130,18 @@ const Navbar: React.FC = () => {
               >
                 Posts
               </Link>
+              <Link
+                to="/quiz"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+              >
+                Quiz
+              </Link>
+              <Link
+                to="/for-you"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+              >
+                For-You
+              </Link>
             </>
           )}
           {token ? (
