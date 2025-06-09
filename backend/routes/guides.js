@@ -20,6 +20,30 @@ router.get("/", async (req, res) => {
   }
 });
 
+//Get guides for for you page according to the level of experience of the user
+router.get("/for-you", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const guides = await Guide.findAll({
+      where: { level: user.experience_level },
+    });
+
+    res.json(guides);
+  } catch (err) {
+    console.error("Error fetching guides:", err);
+    res.status(500).json({ error: "Failed to fetch guides" });
+  }
+});
+
 // Get a single guide by ID (only published guides for non-admins)
 router.get("/:id", async (req, res) => {
   try {
