@@ -22,6 +22,11 @@ const Guide = sequelize.define(
       allowNull: false,
       defaultValue: "draft",
     },
+    level: {
+      type: DataTypes.ENUM("beginner", "novice", "advanced"),
+      defaultValue: "beginner",
+      allowNull: false,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

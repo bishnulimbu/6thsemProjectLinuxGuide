@@ -26,6 +26,11 @@ const User = sequelize.define(
       allowNull: false,
       defaultValue: "user",
     },
+    experience_level: {
+      type: DataTypes.ENUM("beginner", "novice", "advanced"),
+      defaultValue: "beginner",
+      allowNull: false,
+    },
   },
   {
     tableName: "users",
