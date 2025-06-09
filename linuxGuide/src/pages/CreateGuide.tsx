@@ -10,6 +10,7 @@ const CreateGuide: React.FC = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    level: "beginner",
     status: "draft" as "draft" | "published",
   });
   const [loading, setLoading] = useState(false);
@@ -141,6 +142,20 @@ const CreateGuide: React.FC = () => {
               className="p-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-y"
               disabled={loading}
             />
+          </div>
+          <div>
+            <label className="block mb-1">Level</label>
+            <select
+              name="level"
+              value={formData.level}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+              required
+            >
+              <option value="beginner">Beginner</option>
+              <option value="novice">Novice</option>
+              <option value="advanced">Advanced</option>
+            </select>
           </div>
           <div className="flex flex-col">
             <label
