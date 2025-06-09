@@ -12,6 +12,7 @@ const guideRoutes = require("./routes/guides");
 const commentRoutes = require("./routes/comments");
 const contactRoutes = require("./routes/contact");
 const searchRoutes = require("./routes/search");
+const quizRoutes = require("./routes/quiz");
 require("dotenv").config();
 
 const logDir = path.join(__dirname, "logs");
@@ -34,6 +35,7 @@ app.use("/guides", guideRoutes);
 app.use("/comments", commentRoutes);
 app.use("/contact", contactRoutes);
 app.use("/search", searchRoutes);
+app.use("/quiz", quizRoutes);
 
 wss.on("connection", async (ws) => {
   console.log("New WebSocket connection");
