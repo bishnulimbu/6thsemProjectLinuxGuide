@@ -131,6 +131,12 @@ const Navbar: React.FC = () => {
                 Posts
               </Link>
               <Link
+                to="/quiz2"
+                className="text-gray-600 hover:text-blue-600 transition font-medium"
+              >
+                Quiz2
+              </Link>
+              <Link
                 to="/quiz"
                 className="text-gray-600 hover:text-blue-600 transition font-medium"
               >
