@@ -18,6 +18,7 @@ import EditGuide from "../pages/EditGuide";
 import TryLinux from "../pages/TryLinux";
 import Search from "../pages/Search";
 import Quiz from "../pages/Quiz";
+import Quiz2 from "../pages/Quiz2";
 import ForYou from "../pages/ForYou";
 
 const AppRoutes: React.FC = () => (
@@ -41,6 +42,7 @@ const AppRoutes: React.FC = () => (
       <Route path="/try-linux" element={<TryLinux />} />
       <Route path="/search" element={<Search />} />
       <Route path="/quiz" element={<Quiz />} />
+      <Route path="quiz2" element={<Quiz2 />} />
       <Route path="/for-you" element={<ForYou />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
