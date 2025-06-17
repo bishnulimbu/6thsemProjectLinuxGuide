@@ -18,7 +18,7 @@ const Quiz: React.FC = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (!user?.id) return;
+    if (!user?.id) return alert("login first");
 
     try {
       const response = await api.post("/quiz/quiz", {
