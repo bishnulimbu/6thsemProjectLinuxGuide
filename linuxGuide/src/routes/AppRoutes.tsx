@@ -20,6 +20,7 @@ import Search from "../pages/Search";
 import Quiz from "../pages/Quiz";
 import Quiz2 from "../pages/Quiz2";
 import ForYou from "../pages/ForYou";
+import GuideAi from "../pages/GuideAi";
 
 const AppRoutes: React.FC = () => (
   <main>
@@ -43,6 +44,7 @@ const AppRoutes: React.FC = () => (
       <Route path="/search" element={<Search />} />
       <Route path="/quiz" element={<Quiz />} />
       <Route path="quiz2" element={<Quiz2 />} />
+      <Route path="guideAi" element={<GuideAi />} />
       <Route path="/for-you" element={<ForYou />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
