@@ -128,15 +128,15 @@ const UserTerminal: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full h-[500px] min-h-[400px]">
-      {" "}
-      {/* Increased from h-350 */}
+    <div className="min-w-full min-h-[600px] bg-gray-900 rounded-lg overflow-hidden p-1">
       {!isConnected && (
-        <div className="text-gray-500">Connecting to terminal...</div>
+        <div className="absolute inset-0 flex items-center justify-center text-gray-300 bg-gray-900">
+          Connecting to terminal...
+        </div>
       )}
       <div
         ref={terminalRef}
-        className="w-full h-full"
+        className="w-full h-full font-mono text-l text-gray-100"
         aria-label="Linux terminal emulator"
       />
     </div>
