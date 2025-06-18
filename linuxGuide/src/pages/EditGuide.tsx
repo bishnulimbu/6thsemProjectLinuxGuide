@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { getGuideById, updateGuide } from "../services/api"; // Assuming updateGuide is added to api.tsx
 import { Guide } from "../interfaces/interface";
+import MDEditor from "@uiw/react-md-editor";
 
 const EditGuide: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Get guide ID from URL
@@ -188,19 +189,22 @@ const EditGuide: React.FC = () => {
                 htmlFor="description"
                 className="block text-sm font-medium text-gray-700"
               >
-                Description
+                Description (Markdown)
               </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                required
-                placeholder="Enter guide description"
-                rows={6}
-                className="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none disabled:opacity-70"
-                disabled={loading}
-              />
+              {/* Markdown Editor */}
+              <div
+                data-color-mode="light"
+                className="bg-white rounded-xl border border-gray-300 p-2 mb-4"
+              >
+                <MDEditor
+                  value={formData.description}
+                  onChange={(val) =>
+                    setFormData((prev) => ({ ...prev, description: val || "" }))
+                  }
+                  height={300}
+                  preview="edit"
+                />
+              </div>
             </div>
 
             {/* Status Field */}
