@@ -41,7 +41,7 @@ const Posts: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg">
+    <div className="max-w-6xl  mx-auto mt-10 p-8 rounded-xl shadow-lg">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
