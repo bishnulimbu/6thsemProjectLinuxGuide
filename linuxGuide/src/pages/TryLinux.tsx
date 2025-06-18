@@ -4,7 +4,7 @@ import UserTerminal from "../components/ui/UserTerminal";
 const TryLinux: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-max mx-auto">
         {/* Header Section */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -116,18 +116,6 @@ const TryLinux: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Global Styles */}
-      <style>{`
-        .inline-code {
-          font-family: "Fira Code", monospace;
-          background-color: #f3f4f6;
-          padding: 0.2em 0.4em;
-          border-radius: 0.25rem;
-          font-size: 0.9em;
-          color: #3b82f6;
-        }
-      `}</style>
     </div>
   );
 };
