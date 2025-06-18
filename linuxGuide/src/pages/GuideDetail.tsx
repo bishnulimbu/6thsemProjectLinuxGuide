@@ -5,6 +5,7 @@ import { getGuideById } from "../services/api";
 import { Guide } from "../interfaces/interface";
 import ReactMarkdown from "react-markdown"; // New import
 import CommentSection from "../components/ui/CommentSection";
+import remarkGfm from "remark-gfm";
 
 const GuideDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -143,7 +144,9 @@ const GuideDetail: React.FC = () => {
 
       {/* Guide Content */}
       <div className="prose max-w-none prose-lg mb-10">
-        <ReactMarkdown>{guide.description}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {guide.description}
+        </ReactMarkdown>
       </div>
 
       {/* Comments Section */}
