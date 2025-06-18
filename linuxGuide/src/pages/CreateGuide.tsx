@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { createGuide } from "../services/api"; // Assuming createGuide is added to api.tsx
+import MDEditor from "@uiw/react-md-editor";
 
 const CreateGuide: React.FC = () => {
   const { isAdmin, isLoading } = useAuth();
@@ -94,21 +95,24 @@ const CreateGuide: React.FC = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-lg bg-white rounded-xl shadow-lg p-6 sm:p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+    <div className="min-h-screen  flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200 p-6">
+      <div className="w-full max-w-full bg-white rounded-2xl shadow-xl p-8 sm:p-10 transform transition-all hover:shadow-2xl">
+        <h2 className="text-3xl font-extrabold text-gray-900 mb-8 text-center tracking-tight">
           Create New Guide
         </h2>
         {error && (
-          <p className="text-red-600 mb-4 text-center" role="alert">
+          <p
+            className="text-red-500 bg-red-50 border border-red-200 rounded-lg px-4 py-2 mb-6 text-center font-medium"
+            role="alert"
+          >
             {error}
           </p>
         )}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col">
             <label
               htmlFor="title"
-              className="text-sm font-medium text-gray-700 mb-1.5"
+              className="text-sm font-semibold text-gray-800 mb-2"
             >
               Title
             </label>
@@ -120,37 +124,48 @@ const CreateGuide: React.FC = () => {
               onChange={handleChange}
               required
               placeholder="Enter guide title"
-              className="p-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+              className="p-4 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 ease-in-out"
               disabled={loading}
             />
           </div>
           <div className="flex flex-col">
             <label
               htmlFor="description"
-              className="text-sm font-medium text-gray-700 mb-1.5"
+              className="text-sm font-semibold text-gray-800 mb-2"
             >
-              Description
+              Description (Markdown)
             </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              required
-              placeholder="Enter guide description"
-              rows={5}
-              className="p-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-y"
-              disabled={loading}
-            />
+
+            {/* Markdown Editor */}
+            <div
+              data-color-mode="light"
+              className="bg-white rounded-xl border border-gray-300 p-2 mb-4"
+            >
+              <MDEditor
+                value={formData.description}
+                onChange={(val) =>
+                  setFormData((prev) => ({ ...prev, description: val || "" }))
+                }
+                height={300}
+                preview="edit"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block mb-1">Level</label>
+          <div className="flex flex-col">
+            <label
+              htmlFor="level"
+              className="text-sm font-semibold text-gray-800 mb-2"
+            >
+              Level
+            </label>
             <select
+              id="level"
               name="level"
               value={formData.level}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="p-4 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 ease-in-out"
               required
+              disabled={loading}
             >
               <option value="beginner">Beginner</option>
               <option value="novice">Novice</option>
@@ -160,7 +175,7 @@ const CreateGuide: React.FC = () => {
           <div className="flex flex-col">
             <label
               htmlFor="status"
-              className="text-sm font-medium text-gray-700 mb-1.5"
+              className="text-sm font-semibold text-gray-800 mb-2"
             >
               Status
             </label>
@@ -169,7 +184,7 @@ const CreateGuide: React.FC = () => {
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="p-3 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+              className="p-4 bg-gray-100 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 ease-in-out"
               disabled={loading}
             >
               <option value="draft">Draft</option>
@@ -179,20 +194,20 @@ const CreateGuide: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2.5 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 ${
+            className={`w-full py-3 rounded-xl text-white font-semibold text-lg focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-300 ease-in-out ${
               loading
-                ? "bg-blue-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+                ? "bg-indigo-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800"
             }`}
           >
             {loading ? "Creating..." : "Create Guide"}
           </button>
         </form>
-        <p className="text-sm text-gray-600 mt-4 text-center">
+        <p className="text-sm text-gray-500 mt-6 text-center">
           Back to{" "}
           <Link
             to="/admin"
-            className="text-blue-600 hover:underline font-medium"
+            className="text-indigo-600 hover:text-indigo-800 font-semibold transition-colors duration-200"
           >
             Admin Dashboard
           </Link>
